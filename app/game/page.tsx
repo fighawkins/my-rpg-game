@@ -7,7 +7,7 @@ const GamePage: React.FC = () => {
     const [scene, setScene] = useState<string>('');
     const [input, setInput] = useState<string>('');
     const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
-    const { species, characterClass, gender, name, inventory, currency, setInventory, setCurrency } = useGameContext();
+    const { species, characterClass, gender, name, inventory, currency, setInventory, setCurrency, useItem } = useGameContext();
 
     useEffect(() => {
         fetchInitialScene();
@@ -115,24 +115,24 @@ const GamePage: React.FC = () => {
                     ))}
                 </section>
             </div>
-            <section className="flex items-center w-full max-w-3xl mt-6">
-                <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            handleUserInput();
-                        }
-                    }}
-                    className="flex-grow p-4 border border-gray-300 rounded-l-lg"
-                    placeholder="Enter your action..."
-                />
-                <button onClick={handleUserInput} className="bg-blue-500 text-white px-4 py-2 rounded-r-lg">Send</button>
-            </section>
-            <div className="w-full max-w-3xl mt-6">
+            <section className="w-full max-w-3xl">
                 <Inventory inventory={inventory} currency={currency} />
-            </div>
+                <div className="mt-6 flex items-center space-x-4">
+                    <input
+                        type="text"
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleUserInput()}
+                    />
+                    <button
+                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                        onClick={handleUserInput}
+                    >
+                        Send
+                    </button>
+                </div>
+            </section>
         </div>
     );
 };

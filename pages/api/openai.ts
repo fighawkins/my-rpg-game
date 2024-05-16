@@ -76,6 +76,8 @@ You are a dungeon master. Continue the story based on the above context and play
 If the player's action is related to buying an item, check if they have enough currency. If yes, subtract the cost from their currency and add the item to their inventory. Otherwise, inform them they don't have enough currency. Return the updated inventory and currency in the response.
 
 If the player's action is related to using an item from their inventory, apply the item's effects and remove it from the inventory. Return the updated inventory and any changes to the player's status or stats in the response.
+
+If the player's action is related to finding or obtaining an item or currency, add the item to their inventory or add the currency to their current amount. Return the updated inventory and currency in the response.
 `;
 
         try {

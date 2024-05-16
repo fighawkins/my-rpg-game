@@ -1,22 +1,22 @@
 import React from 'react';
 
-interface InventoryProps {
+type InventoryProps = {
     inventory: string[];
     currency: number;
-}
+};
 
 const Inventory: React.FC<InventoryProps> = ({ inventory, currency }) => {
     return (
-        <div className="bg-white p-4 rounded-lg shadow-lg">
-            <h2 className="text-2xl mb-2 text-gray-700">Inventory</h2>
-            <ul className="list-disc list-inside">
+        <div className="bg-white p-4 rounded-lg shadow-md">
+            <h2 className="text-2xl font-bold mb-4">Inventory</h2>
+            <ul className="list-disc pl-6">
                 {inventory.map((item, index) => (
-                    <li key={index} className="text-lg text-gray-800">{item}</li>
+                    <li key={index}>{item}</li>
                 ))}
             </ul>
             <div className="mt-4">
-                <h2 className="text-2xl mb-2 text-gray-700">Currency</h2>
-                <p className="text-lg text-gray-800">{currency} gold</p>
+                <h3 className="text-xl font-semibold">Currency</h3>
+                <p>{currency} gold</p>
             </div>
         </div>
     );

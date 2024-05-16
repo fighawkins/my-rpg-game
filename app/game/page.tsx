@@ -1,12 +1,13 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '@/context/GameContext';
+import Inventory from '../components/inventory';
 
-export default function GamePage() {
+const GamePage: React.FC = () => {
     const [scene, setScene] = useState<string>('');
     const [input, setInput] = useState<string>('');
     const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
-    const { species, characterClass, gender, name } = useGameContext();
+    const { species, characterClass, gender, name, inventory, currency, setInventory, setCurrency } = useGameContext();
 
     useEffect(() => {
         fetchInitialScene();
@@ -24,7 +25,9 @@ export default function GamePage() {
                     species,
                     characterClass,
                     gender,
-                    name
+                    name,
+                    inventory,
+                    currency
                 }),
             });
 
@@ -55,11 +58,13 @@ export default function GamePage() {
 
                     Context: ${messages.map(msg => `${msg.role}: ${msg.content}`).join('\n')}
                     Player's action: ${input}
-                    Species: ${species}, Character Class: ${characterClass}, Gender: ${gender}, Name: ${name}`,
+                    Species: ${species}, Character Class: ${characterClass}, Gender: ${gender}, Name: ${name}, Inventory: ${inventory.join(', ')}, Currency: ${currency}`,
                     species,
                     characterClass,
                     gender,
-                    name
+                    name,
+                    inventory,
+                    currency
                 }),
             });
 
@@ -69,6 +74,13 @@ export default function GamePage() {
 
             const data = await response.json();
             const aiMessage = { role: 'ai', content: data.response };
+            const { updatedInventory, updatedCurrency } = data;
+
+            console.log("Updated Inventory:", updatedInventory);
+            console.log("Updated Currency:", updatedCurrency);
+
+            setInventory(updatedInventory);
+            setCurrency(updatedCurrency);
 
             // Ensure the response is not cut off and ends with a prompt
             if (!aiMessage.content.endsWith("What would you like to do next?")) {
@@ -80,7 +92,6 @@ export default function GamePage() {
             console.error('Fetch error:', error);
         }
     };
-
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
@@ -109,17 +120,21 @@ export default function GamePage() {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleUserInput()}
-                    className="flex-grow p-2 text-lg border border-gray-300 rounded mr-2"
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleUserInput();
+                        }
+                    }}
+                    className="flex-grow p-4 border border-gray-300 rounded-l-lg"
                     placeholder="Enter your action..."
                 />
-                <button
-                    onClick={handleUserInput}
-                    className="p-2 text-lg bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                    Send
-                </button>
+                <button onClick={handleUserInput} className="bg-blue-500 text-white px-4 py-2 rounded-r-lg">Send</button>
             </section>
+            <div className="w-full max-w-3xl mt-6">
+                <Inventory inventory={inventory} currency={currency} />
+            </div>
         </div>
     );
-}
+};
+
+export default GamePage;

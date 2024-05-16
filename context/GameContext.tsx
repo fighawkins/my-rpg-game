@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type GameState = {
@@ -14,6 +14,7 @@ type GameState = {
     setName: (name: string) => void;
     setInventory: (inventory: string[]) => void;
     setCurrency: (currency: number) => void;
+    useItem: (item: string) => void;
 };
 
 const initialState: GameState = {
@@ -22,13 +23,14 @@ const initialState: GameState = {
     characterClass: '',
     name: '',
     inventory: [],
-    currency: 100, // Initial amount of currency
+    currency: 100,
     setSpecies: () => { },
     setGender: () => { },
     setCharacterClass: () => { },
     setName: () => { },
     setInventory: () => { },
     setCurrency: () => { },
+    useItem: () => { },
 };
 
 const GameContext = createContext<GameState>(initialState);
@@ -40,6 +42,11 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const [name, setName] = useState(initialState.name);
     const [inventory, setInventory] = useState(initialState.inventory);
     const [currency, setCurrency] = useState(initialState.currency);
+
+    const useItem = (item: string) => {
+        const newInventory = inventory.filter(invItem => invItem !== item);
+        setInventory(newInventory);
+    };
 
     return (
         <GameContext.Provider
@@ -56,6 +63,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
                 setName,
                 setInventory,
                 setCurrency,
+                useItem,
             }}
         >
             {children}

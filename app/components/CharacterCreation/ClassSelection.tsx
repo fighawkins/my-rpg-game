@@ -26,9 +26,9 @@ export default function ClassSelection() {
     const currentClass: Class = classOptions[currentClassIndex];
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
             <h2 className="text-3xl font-bold mb-4">Select Your Class</h2>
-            <div className="relative flex items-center justify-center w-full h-1/2">
+            <div className="relative flex items-center justify-center w-full max-w-3xl h-1/2">
                 <FaArrowLeft
                     onClick={handlePrev}
                     className="absolute left-4 top-1/2 transform -translate-y-1/2 text-3xl cursor-pointer"
@@ -36,7 +36,7 @@ export default function ClassSelection() {
                 <img
                     src={localGender === 'male' ? currentClass.species[species].maleImage : currentClass.species[species].femaleImage}
                     alt={currentClass.name}
-                    className="w-[400px] h-auto object-cover transition-transform duration-500 ease-in-out mx-4"
+                    className="w-full h-auto max-w-[400px] object-cover transition-transform duration-500 ease-in-out mx-4"
                     key={currentClassIndex}
                 />
                 <FaArrowRight

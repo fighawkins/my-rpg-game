@@ -7,7 +7,19 @@ const GamePage: React.FC = () => {
     const [scene, setScene] = useState<string>('');
     const [input, setInput] = useState<string>('');
     const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
-    const { species, characterClass, gender, name, inventory, currency, setInventory, setCurrency, useItem } = useGameContext();
+    const {
+        species,
+        characterClass,
+        gender,
+        name,
+        inventory,
+        abilities,
+        spells,
+        currency,
+        setInventory,
+        setCurrency,
+        updateAbilitiesAndSpells
+    } = useGameContext();
 
     useEffect(() => {
         fetchInitialScene();
@@ -27,7 +39,9 @@ const GamePage: React.FC = () => {
                     gender,
                     name,
                     inventory,
-                    currency
+                    currency,
+                    abilities,
+                    spells,
                 }),
             });
 
@@ -64,7 +78,9 @@ const GamePage: React.FC = () => {
                     gender,
                     name,
                     inventory,
-                    currency
+                    currency,
+                    abilities,
+                    spells,
                 }),
             });
 
@@ -74,13 +90,21 @@ const GamePage: React.FC = () => {
 
             const data = await response.json();
             const aiMessage = { role: 'ai', content: data.response };
-            const { updatedInventory, updatedCurrency } = data;
 
-            console.log("Updated Inventory:", updatedInventory);
-            console.log("Updated Currency:", updatedCurrency);
+            // Parse the API response for updated status
+            const updatedInventoryMatch = data.response.match(/\*\*Inventory\*\*: (.*?)\s*$/m);
+            const updatedCurrencyMatch = data.response.match(/\*\*Currency\*\*: (\d+) gold/m);
+            const updatedAbilitiesMatch = data.response.match(/\*\*Abilities\*\*: (.*?)\s*$/m);
+            const updatedSpellsMatch = data.response.match(/\*\*Spells\*\*: (.*?)\s*$/m);
+
+            const updatedInventory = updatedInventoryMatch ? updatedInventoryMatch[1].split(', ').filter(item => item !== 'None') : inventory;
+            const updatedCurrency = updatedCurrencyMatch ? parseInt(updatedCurrencyMatch[1], 10) : currency;
+            const updatedAbilities = updatedAbilitiesMatch ? parseAbilities(updatedAbilitiesMatch[1]) : abilities;
+            const updatedSpells = updatedSpellsMatch ? parseSpells(updatedSpellsMatch[1]) : spells;
 
             setInventory(updatedInventory);
             setCurrency(updatedCurrency);
+            updateAbilitiesAndSpells(updatedAbilities, updatedSpells);
 
             // Ensure the response is not cut off and ends with a prompt
             if (!aiMessage.content.endsWith("What would you like to do next?")) {
@@ -91,6 +115,21 @@ const GamePage: React.FC = () => {
         } catch (error) {
             console.error('Fetch error:', error);
         }
+    };
+
+    // Helper functions to parse abilities and spells
+    const parseAbilities = (abilitiesString: string) => {
+        return abilitiesString.trim().split(',').map(ability => {
+            const [name, description] = ability.split(':').map(part => part.trim());
+            return { name, description };
+        });
+    };
+
+    const parseSpells = (spellsString: string) => {
+        return spellsString.trim().split(',').map(spell => {
+            const [name, description] = spell.split(':').map(part => part.trim());
+            return { name, description };
+        });
     };
 
     return (
@@ -116,7 +155,7 @@ const GamePage: React.FC = () => {
                 </section>
             </div>
             <section className="w-full max-w-3xl">
-                <Inventory inventory={inventory} currency={currency} />
+                <Inventory inventory={inventory} currency={currency} abilities={abilities} spells={spells} />
                 <div className="mt-6 flex items-center space-x-4">
                     <input
                         type="text"

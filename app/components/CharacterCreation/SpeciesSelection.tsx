@@ -24,9 +24,9 @@ export default function SpeciesSelection() {
     const currentSpecies: Species = speciesOptions[currentSpeciesIndex];
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-white p-4">
             <h2 className="text-3xl font-bold mb-4">Select Your Species</h2>
-            <div className="relative flex items-center justify-center w-full h-1/2">
+            <div className="relative flex items-center justify-center w-full max-w-3xl h-1/2">
                 <FaArrowLeft
                     onClick={handlePrev}
                     className="absolute left-4 top-1/2 transform -translate-y-1/2 text-3xl cursor-pointer"
@@ -34,7 +34,7 @@ export default function SpeciesSelection() {
                 <img
                     src={currentSpecies.image}
                     alt={currentSpecies.name}
-                    className="w-[400px] h-auto object-cover transition-transform duration-500 ease-in-out mx-4"
+                    className="w-full h-auto max-w-[400px] object-cover transition-transform duration-500 ease-in-out mx-4"
                     key={currentSpeciesIndex}
                 />
                 <FaArrowRight
@@ -43,7 +43,7 @@ export default function SpeciesSelection() {
                 />
             </div>
             <Link href="/character-creation/class">
-                <button onClick={handleChoose} className="mt-4 px-4 py-2 bg-green-500 text-white rounded">
+                <button onClick={handleChoose} className="mt-4 px-4 py-2 bg-white text-black border border-black rounded">
                     Choose
                 </button>
             </Link>

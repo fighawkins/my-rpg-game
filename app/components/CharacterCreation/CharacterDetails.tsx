@@ -1,13 +1,15 @@
 "use client";
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useGameContext } from "@/context/GameContext";
-import { speciesOptions } from "@/data/species";
-import { classOptions, Ability, Spell } from "@/data/classes";
+import React, { useState, useEffect } from 'react';
+import { useGameContext } from '@/context/GameContext';
+import { speciesOptions } from '@/data/species';
+import { classOptions } from '@/data/classes';
+import Link from 'next/link';
+import Inventory from '../inventory';
 
 export default function CharacterDetails() {
-    const { species, gender, characterClass, setName } = useGameContext();
-    const [name, setLocalName] = useState("");
+    const { species, gender, characterClass, name, inventory, currency, abilities, spells, setName, initializeCharacter, setInventory, setCurrency, setAbilities, setSpells } = useGameContext();
+    const [localName, setLocalName] = useState(name);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLocalName(e.target.value);
     };
@@ -16,11 +18,61 @@ export default function CharacterDetails() {
         if (!species || !characterClass) {
             // Redirect to species selection if no species or class is selected
             window.location.href = "/character-creation/species";
+        } else {
+            // Initialize character with abilities and spells if species and class are selected
+            initializeCharacter(species, characterClass);
         }
     }, [species, characterClass]);
 
-    const handleBeginGame = () => {
-        setName(name);
+    useEffect(() => {
+        console.log('Inventory:', inventory);
+        console.log('Currency:', currency);
+        console.log('Abilities:', abilities);
+        console.log('Spells:', spells);
+    }, [inventory, currency, abilities, spells]);
+
+    const handleBeginGame = async () => {
+        setName(localName);
+
+        try {
+            const response = await fetch('/api/openai', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    prompt: 'I want to begin my journey.',
+                    species,
+                    characterClass,
+                    gender,
+                    name: localName,
+                    inventory,
+                    currency,
+                    abilities,
+                    spells,
+                }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const { updatedInventory, updatedCurrency, updatedAbilities, updatedSpells } = data;
+
+                setInventory(updatedInventory);
+                setCurrency(updatedCurrency);
+                setAbilities(updatedAbilities);
+                setSpells(updatedSpells);
+
+                // Log the updated state
+                console.log('Updated Inventory:', updatedInventory);
+                console.log('Updated Currency:', updatedCurrency);
+                console.log('Updated Abilities:', updatedAbilities);
+                console.log('Updated Spells:', updatedSpells);
+            } else {
+                console.error('Failed to update character details.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     const selectedSpecies = speciesOptions.find((s) => s.name === species);
@@ -30,12 +82,8 @@ export default function CharacterDetails() {
         return null; // or handle error
     }
 
-    const speciesAbilities: Ability[] = selectedSpecies.abilities;
-    const classDetails = selectedClass.species[species];
-    const classAbilities: Ability[] = classDetails.abilities;
-    const classSpells: Spell[] = classDetails.spells;
-
-    const characterImage = classDetails[gender === 'male' ? 'maleImage' : 'femaleImage'];
+    const classDetails = selectedClass.species[species as keyof typeof selectedClass.species];
+    const characterImage = classDetails ? classDetails[gender === 'male' ? 'maleImage' : 'femaleImage'] : '';
 
     return (
         <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-4">
@@ -45,7 +93,7 @@ export default function CharacterDetails() {
                     <label className="text-xl font-semibold">What is your name?</label>
                     <input
                         type="text"
-                        value={name}
+                        value={localName}
                         onChange={handleChange}
                         className="block w-full mt-2 px-4 py-2 border border-gray-300 rounded-md"
                     />
@@ -59,23 +107,8 @@ export default function CharacterDetails() {
                     />
                     <p><strong>Species:</strong> {species}</p>
                     <p><strong>Class:</strong> {characterClass}</p>
-                    <p><strong>Name:</strong> {name}</p>
-                    <h4 className="text-xl font-bold mt-4">Abilities:</h4>
-                    <ul className="list-disc list-inside">
-                        {speciesAbilities.concat(classAbilities).map((ability, index) => (
-                            <li key={index}>
-                                <strong>{ability.name}:</strong> {ability.description}
-                            </li>
-                        ))}
-                    </ul>
-                    <h4 className="text-xl font-bold mt-4">Spells:</h4>
-                    <ul className="list-disc list-inside">
-                        {classSpells.map((spell, index) => (
-                            <li key={index}>
-                                <strong>{spell.name}:</strong> {spell.description}
-                            </li>
-                        ))}
-                    </ul>
+                    <p><strong>Name:</strong> {localName}</p>
+                    <Inventory inventory={inventory} currency={currency} abilities={abilities} spells={spells} />
                 </div>
                 <Link href="/game">
                     <button onClick={handleBeginGame} className="mt-8 px-6 py-3 bg-green-500 text-white text-xl rounded-lg shadow-md hover:bg-green-600 transition-colors duration-300 w-full">

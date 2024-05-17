@@ -100,7 +100,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
             const diceRollData = await diceRollResponse.json();
             diceRoll = diceRollData.roll;
-            console.log("Dice roll fetched:", diceRoll);
+            console.log("Dice roll fetched:", diceRoll);  // Verify this log
         } catch (error) {
             console.error("Error fetching dice roll:", error);
             return res.status(500).json({ error: "Failed to fetch dice roll" });
@@ -130,6 +130,11 @@ ${prompt}
 
 ### Instructions:
 You are a dungeon master. Continue the story based on the above context and player's action. Do not repeat information already provided. Respond concisely, and end with "What would you like to do next?".
+Determine the passing score needed based on the difficulty of the action/skill check and the character's current stats and abilities:
+- Easy tasks (e.g., simple actions that match the character's skills): Passing score of 5-10.
+- Moderate tasks (e.g., actions that are within the character's abilities but require effort): Passing score of 11-15.
+- Difficult tasks (e.g., actions that are challenging even for skilled characters): Passing score of 16-20.
+- Impossible tasks (e.g., actions that are beyond the character's capabilities without special circumstances): Explain why the task is impossible and suggest alternatives.
 
 Respond to the player's action within the narrative without disrupting the story with inventory, currency, abilities, or spells. Focus on storytelling and narrative coherence. Use the provided dice roll for any random outcomes.
 Speak in present tense.
@@ -145,7 +150,7 @@ If the player's action is related to learning a new ability or spell, add it to 
 **Abilities**: ability1: description1, ability2: description2
 **Spells**: spell1: description1, spell2: description2
 
-Use the dice roll provided in the context for all random outcomes. Do not generate your own random numbers.
+Use the dice roll provided in the context (${diceRoll}) for all random outcomes/skill checks. Do not generate your own random numbers. Explicitly mention the dice roll in the response and base the outcome on this provided dice roll.
 
 Ensure the story remains coherent and engaging. Encourage player creativity and decision-making. Maintain a balance between challenge and fairness. Narrate the outcomes of actions based on the dice rolls in a way that enhances the story and keeps the player engaged. Provide concise and relevant responses to the player's specific questions or actions without veering off-topic. If the player asks a specific question, answer directly and briefly, unless additional context is necessary. Before resolving an action, ask the player to confirm or provide additional input.
 Allow the player to "live in" the world, engaging in non-quest activities like building relationships with NPCs, making plans, and exploring daily life. The world should feel real, not just quest-driven.

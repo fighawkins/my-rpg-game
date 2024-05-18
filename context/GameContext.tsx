@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Ability, Spell, classOptions } from '../data/classes';
+import { Ability, Spell, classOptions, Stats } from '../data/classes';
 import { speciesOptions } from '@/data/species';
 
 type GameState = {
@@ -12,6 +12,9 @@ type GameState = {
     currency: number;
     abilities: Ability[];
     spells: Spell[];
+    stats: Stats;
+    hp: number;
+    mp: number;
     setSpecies: (species: string) => void;
     setGender: (gender: 'male' | 'female') => void;
     setCharacterClass: (characterClass: string) => void;
@@ -20,6 +23,9 @@ type GameState = {
     setCurrency: (currency: number) => void;
     setAbilities: (abilities: Ability[]) => void;
     setSpells: (spells: Spell[]) => void;
+    setStats: (stats: Stats) => void;
+    setHp: (hp: number) => void;
+    setMp: (mp: number) => void;
     useItem: (item: string) => void;
     initializeCharacter: (speciesName: string, className: string) => void;
     updateAbilitiesAndSpells: (newAbilities: Ability[], newSpells: Spell[]) => void;
@@ -34,6 +40,16 @@ const initialState: GameState = {
     currency: 100,
     abilities: [],
     spells: [],
+    stats: {
+        strength: 0,
+        dexterity: 0,
+        constitution: 0,
+        intelligence: 0,
+        wisdom: 0,
+        charisma: 0,
+    },
+    hp: 0,
+    mp: 0,
     setSpecies: () => { },
     setGender: () => { },
     setCharacterClass: () => { },
@@ -42,6 +58,9 @@ const initialState: GameState = {
     setCurrency: () => { },
     setAbilities: () => { },
     setSpells: () => { },
+    setStats: () => { },
+    setHp: () => { },
+    setMp: () => { },
     useItem: () => { },
     initializeCharacter: () => { },
     updateAbilitiesAndSpells: () => { },
@@ -58,6 +77,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const [currency, setCurrency] = useState(initialState.currency);
     const [abilities, setAbilities] = useState(initialState.abilities);
     const [spells, setSpells] = useState(initialState.spells);
+    const [stats, setStats] = useState(initialState.stats);
+    const [hp, setHp] = useState(initialState.hp);
+    const [mp, setMp] = useState(initialState.mp);
 
     const useItem = (item: string) => {
         const newInventory = inventory.filter(invItem => invItem !== item);
@@ -71,6 +93,24 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         if (species && charClass) {
             setAbilities([...species.abilities, ...charClass.abilities]);
             setSpells([...charClass.spells]);
+
+            // Combine base stats and class stat modifiers
+            const combinedStats: Stats = {
+                strength: species.baseStats.strength + charClass.statModifiers.strength,
+                dexterity: species.baseStats.dexterity + charClass.statModifiers.dexterity,
+                constitution: species.baseStats.constitution + charClass.statModifiers.constitution,
+                intelligence: species.baseStats.intelligence + charClass.statModifiers.intelligence,
+                wisdom: species.baseStats.wisdom + charClass.statModifiers.wisdom,
+                charisma: species.baseStats.charisma + charClass.statModifiers.charisma,
+            };
+
+            // Set HP and MP based on combined stats
+            const initialHp = combinedStats.constitution * 2 + 10; // Example formula for HP
+            const initialMp = combinedStats.intelligence * 2 + 10; // Example formula for MP
+
+            setStats(combinedStats);
+            setHp(initialHp);
+            setMp(initialMp);
         }
     };
 
@@ -90,6 +130,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
                 currency,
                 abilities,
                 spells,
+                stats,
+                hp,
+                mp,
                 setSpecies,
                 setGender,
                 setCharacterClass,
@@ -98,6 +141,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
                 setCurrency,
                 setAbilities,
                 setSpells,
+                setStats,
+                setHp,
+                setMp,
                 useItem,
                 initializeCharacter,
                 updateAbilitiesAndSpells,

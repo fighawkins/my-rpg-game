@@ -1,4 +1,5 @@
 // src/data/classes.ts
+
 export type Ability = {
     name: string;
     description: string;
@@ -9,10 +10,20 @@ export type Spell = {
     description: string;
 };
 
+export type Stats = {
+    strength: number;
+    dexterity: number;
+    constitution: number;
+    intelligence: number;
+    wisdom: number;
+    charisma: number;
+};
+
 export type Class = {
     name: string;
     abilities: Ability[];
     spells: Spell[];
+    statModifiers: Stats;
     species: {
         [key: string]: {
             maleImage: string;
@@ -28,6 +39,14 @@ export const classOptions: Class[] = [
             { name: 'Extra Attack', description: 'Perform an additional attack.' },
         ],
         spells: [],
+        statModifiers: {
+            strength: 2,
+            dexterity: 1,
+            constitution: 2,
+            intelligence: 0,
+            wisdom: 0,
+            charisma: 0,
+        },
         species: {
             Mouse: {
                 maleImage: '/images/mouse_warrior_male.webp',
@@ -49,6 +68,14 @@ export const classOptions: Class[] = [
         spells: [
             { name: 'Prayer', description: 'Heal minor wounds with a prayer.' },
         ],
+        statModifiers: {
+            strength: 0,
+            dexterity: 0,
+            constitution: 1,
+            intelligence: 1,
+            wisdom: 2,
+            charisma: 0,
+        },
         species: {
             Mouse: {
                 maleImage: '/images/mouse_healer_male.webp',
@@ -72,6 +99,14 @@ export const classOptions: Class[] = [
         spells: [
             { name: 'Talk with Animals', description: 'Communicate with animals.' },
         ],
+        statModifiers: {
+            strength: 1,
+            dexterity: 2,
+            constitution: 1,
+            intelligence: 0,
+            wisdom: 1,
+            charisma: 0,
+        },
         species: {
             Mouse: {
                 maleImage: '/images/mouse_ranger_male.webp',

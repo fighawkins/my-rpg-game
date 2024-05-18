@@ -85,10 +85,14 @@ const parseAIResponse = (
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
-        const { prompt, species, characterClass, gender, name, inventory = [], currency, abilities = [], spells = [] } = req.body;
+        const { prompt, species, characterClass, gender, name, inventory = [], currency, abilities = [], spells = [], stats } = req.body;
 
-        if (!prompt || !species || !characterClass || !gender || !name || !Array.isArray(inventory) || currency === undefined || !Array.isArray(abilities) || !Array.isArray(spells)) {
-            return res.status(400).json({ error: "All fields are required: prompt, species, characterClass, gender, name, inventory, currency, abilities, spells" });
+        // Log the incoming request body
+        console.log("Request body:", req.body);
+
+        if (!prompt || !species || !characterClass || !gender || !name || !Array.isArray(inventory) || currency === undefined || !Array.isArray(abilities) || !Array.isArray(spells) || !stats) {
+            console.error("Missing required fields in the request body.");
+            return res.status(400).json({ error: "All fields are required: prompt, species, characterClass, gender, name, inventory, currency, abilities, spells, stats" });
         }
 
         let diceRoll;
@@ -107,20 +111,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         const context = `
-### Character Information:
-- Name: ${name}
-- Species: ${species}
-- Class: ${characterClass}
-- Gender: ${gender}
-- Inventory: ${inventory.join(', ')}
-- Abilities: ${abilities.map(ability => `${ability.name}: ${ability.description}`).join(', ')}
-- Spells: ${spells.map(spell => `${spell.name}: ${spell.description}`).join(', ')}
-- Currency: ${currency} gold
-- Dice Roll: ${diceRoll}
-
-### World Overview:
-${worldOverview}
-`;
+        ### Character Information:
+        - Name: ${name}
+        - Species: ${species}
+        - Class: ${characterClass}
+        - Gender: ${gender}
+        - Inventory: ${inventory.join(', ')}
+        - Abilities: ${abilities.map(ability => `${ability.name}: ${ability.description}`).join(', ')}
+        - Spells: ${spells.map(spell => `${spell.name}: ${spell.description}`).join(', ')}
+        - Currency: ${currency} gold
+        - Stats:
+          - Strength: ${stats.strength}
+          - Dexterity: ${stats.dexterity}
+          - Constitution: ${stats.constitution}
+          - Intelligence: ${stats.intelligence}
+          - Wisdom: ${stats.wisdom}
+          - Charisma: ${stats.charisma}
+        - Dice Roll: ${diceRoll}
+        
+        ### World Overview:
+        ${worldOverview}
+        `;
 
         const completePrompt = `
 ${context}
@@ -182,3 +193,10 @@ Give realistic consequences to the player's action, with nuance and complexity.
         res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
+
+
+
+
+
+
+

@@ -15,6 +15,7 @@ const GamePage: React.FC = () => {
         inventory,
         abilities,
         spells,
+        stats,
         currency,
         setInventory,
         setCurrency,
@@ -42,6 +43,7 @@ const GamePage: React.FC = () => {
                     currency,
                     abilities,
                     spells,
+                    stats,
                 }),
             });
 
@@ -81,6 +83,7 @@ const GamePage: React.FC = () => {
                     currency,
                     abilities,
                     spells,
+                    stats
                 }),
             });
 
@@ -155,7 +158,7 @@ const GamePage: React.FC = () => {
                 </section>
             </div>
             <section className="w-full max-w-3xl">
-                <Inventory inventory={inventory} currency={currency} abilities={abilities} spells={spells} />
+                <Inventory inventory={inventory} currency={currency} abilities={abilities} spells={spells} stats={stats} />
                 <div className="mt-6 flex items-center space-x-4">
                     <input
                         type="text"

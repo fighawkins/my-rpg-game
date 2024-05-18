@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Inventory from '../inventory';
 
 export default function CharacterDetails() {
-    const { species, gender, characterClass, name, inventory, currency, abilities, spells, setName, initializeCharacter, setInventory, setCurrency, setAbilities, setSpells } = useGameContext();
+    const { species, gender, characterClass, name, inventory, currency, abilities, stats, hp, mp, spells, setName, initializeCharacter, setInventory, setCurrency, setAbilities, setSpells } = useGameContext();
     const [localName, setLocalName] = useState(name);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,7 +108,11 @@ export default function CharacterDetails() {
                     <p><strong>Species:</strong> {species}</p>
                     <p><strong>Class:</strong> {characterClass}</p>
                     <p><strong>Name:</strong> {localName}</p>
-                    <Inventory inventory={inventory} currency={currency} abilities={abilities} spells={spells} />
+
+                    <div className="mt-4">
+
+                    </div>
+                    <Inventory inventory={inventory} currency={currency} abilities={abilities} spells={spells} stats={stats} hp={hp} mp={mp} />
                 </div>
                 <Link href="/game">
                     <button onClick={handleBeginGame} className="mt-8 px-6 py-3 bg-green-500 text-white text-xl rounded-lg shadow-md hover:bg-green-600 transition-colors duration-300 w-full">

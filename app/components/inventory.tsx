@@ -16,9 +16,11 @@ type InventoryProps = {
     abilities: Ability[];
     spells: Spell[];
     stats: Stats;
+    hp: number;
+    mp: number;
 };
 
-const Inventory: React.FC<InventoryProps> = ({ inventory, currency, abilities, spells, stats }) => {
+const Inventory: React.FC<InventoryProps> = ({ inventory, currency, abilities, spells, stats, hp, mp }) => {
     return (
         <div className="bg-white p-4 rounded-lg shadow-md">
             <h2 className="text-2xl font-bold mb-4">Inventory</h2>
@@ -64,6 +66,14 @@ const Inventory: React.FC<InventoryProps> = ({ inventory, currency, abilities, s
                     </div>
                 </div>
             )}
+            <div className="mt-4">
+                <h3 className="text-xl font-semibold">HP</h3>
+                <div className="pl-6">{hp}</div>
+            </div>
+            <div className="mt-4">
+                <h3 className="text-xl font-semibold">MP</h3>
+                <div className="pl-6">{mp}</div>
+            </div>
         </div>
     );
 };

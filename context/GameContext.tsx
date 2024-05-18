@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Ability, Spell, classOptions, Stats } from '../data/classes';
 import { speciesOptions } from '@/data/species';
@@ -104,9 +104,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
                 charisma: species.baseStats.charisma + charClass.statModifiers.charisma,
             };
 
-            // Set HP and MP based on combined stats
-            const initialHp = combinedStats.constitution * 2 + 10; // Example formula for HP
-            const initialMp = combinedStats.intelligence * 2 + 10; // Example formula for MP
+            // Calculate HP and MP based on class starting values
+            const initialHp = charClass.startingHP;
+            const initialMp = charClass.startingMP;
 
             setStats(combinedStats);
             setHp(initialHp);

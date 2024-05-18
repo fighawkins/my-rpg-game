@@ -28,6 +28,8 @@ export default function ClassSelection() {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
             <h2 className="text-3xl font-bold mb-4">Select Your Class</h2>
+            <div className="text-2xl font-semibold mb-2">{currentClass.name}</div>
+
             <div className="relative flex items-center justify-center w-full max-w-3xl h-1/2">
                 <FaArrowLeft
                     onClick={handlePrev}
@@ -58,11 +60,36 @@ export default function ClassSelection() {
                     Female
                 </button>
             </div>
+            <div className="flex flex-row justify-between mt-4 w-full max-w-2xl">
+                <div className="text-lg">
+                    <div className="font-semibold">Stat Modifiers:</div>
+                    <ul className="list-disc list-inside">
+                        <li>Strength: {currentClass.statModifiers.strength}</li>
+                        <li>Dexterity: {currentClass.statModifiers.dexterity}</li>
+                        <li>Constitution: {currentClass.statModifiers.constitution}</li>
+                        <li>Intelligence: {currentClass.statModifiers.intelligence}</li>
+                        <li>Wisdom: {currentClass.statModifiers.wisdom}</li>
+                        <li>Charisma: {currentClass.statModifiers.charisma}</li>
+                    </ul>
+
+                </div>
+                <div className="font-semibold">HP: {currentClass.startingHP}</div>
+                <div className="font-semibold mb-4">MP: {currentClass.startingMP}</div>
+                <div className="text-lg">
+                    <div className="font-semibold">Starting Items:</div>
+                    <ul className="list-disc list-inside">
+                        {currentClass.startingItems.map((item, index) => (
+                            <li key={index}>{item}</li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
             <Link href="/character-creation/details">
                 <button onClick={handleChoose} className="mt-4 px-4 py-2 bg-green-500 text-white rounded">
                     Choose
                 </button>
             </Link>
         </div>
+
     );
 }

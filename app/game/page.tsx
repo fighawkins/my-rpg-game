@@ -158,18 +158,21 @@ const GamePage: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-row items-start justify-center min-h-screen bg-gray-100 p-6 space-x-4">
-            <div className="w-1/4 bg-white rounded-lg shadow-lg p-4 space-y-4">
-                <CharacterInfo species={species} characterClass={characterClass} name={name} />
-                <Inventory inventory={inventory} currency={currency} abilities={abilities} spells={spells} stats={stats} hp={hp} mp={mp} />
-            </div>
-            <div className="w-3/4 flex flex-col">
-                <header className="text-center">
-                    <h1 className="text-3xl mb-2 text-gray-800">Adventure Game</h1>
-                    <p className="text-lg text-gray-600">Embark on your journey and make choices to shape your destiny.</p>
-                </header>
-                <GameLog messages={messages} />
-                <InputArea input={input} setInput={setInput} handleUserInput={handleUserInput} />
+        <div className="bg-gradient-to-b from-green-200 via-cream-200 to-brown-200 min-h-screen flex items-center justify-center p-6 text-gray-800">
+            <div className="flex flex-row items-start justify-center max-w-7xl w-full space-x-6 p-6 bg-[#825f2644] rounded-lg shadow-lg">
+                <div className="w-1/4 bg-green-100 p-6 rounded-lg shadow-md">
+                    <CharacterInfo species={species} characterClass={characterClass} name={name} stats={stats} hp={hp} mp={mp} gender={gender} />
+                </div>
+                <div className="w-2/4 bg-[#FFFDDD] p-6 rounded-lg shadow-md flex flex-col">
+                    <header className="text-center mb-6">
+                        <h1 className="text-4xl font-bold mb-2">Quest Simulation</h1>
+                    </header>
+                    <GameLog messages={messages} />
+                    <InputArea input={input} setInput={setInput} handleUserInput={handleUserInput} />
+                </div>
+                <div className="w-1/4 bg-green-100 p-6 rounded-lg shadow-md">
+                    <Inventory inventory={inventory} currency={currency} abilities={abilities} spells={spells} />
+                </div>
             </div>
         </div>
     );

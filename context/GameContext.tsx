@@ -116,9 +116,23 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const updateAbilitiesAndSpells = (newAbilities: Ability[], newSpells: Spell[]) => {
-        setAbilities(newAbilities);
-        setSpells(newSpells);
+        setAbilities((prevAbilities) => {
+            const updatedAbilities = [...prevAbilities, ...newAbilities];
+            // Remove duplicates
+            return updatedAbilities.filter((ability, index, self) =>
+                index === self.findIndex((a) => a.name === ability.name)
+            );
+        });
+
+        setSpells((prevSpells) => {
+            const updatedSpells = [...prevSpells, ...newSpells];
+            // Remove duplicates
+            return updatedSpells.filter((spell, index, self) =>
+                index === self.findIndex((s) => s.name === spell.name)
+            );
+        });
     };
+
 
     return (
         <GameContext.Provider

@@ -1,78 +1,54 @@
 import { Ability, Spell } from '@/data/classes';
 import React from 'react';
 
-type Stats = {
-    strength: number;
-    dexterity: number;
-    constitution: number;
-    intelligence: number;
-    wisdom: number;
-    charisma: number;
-};
-
 type InventoryProps = {
     inventory: string[];
     currency: number;
     abilities: Ability[];
     spells: Spell[];
-    stats: Stats;
-    hp: number;
-    mp: number;
 };
 
-const Inventory: React.FC<InventoryProps> = ({ inventory, currency, abilities, spells, stats, hp, mp }) => {
+const Inventory: React.FC<InventoryProps> = ({ inventory, currency, abilities, spells }) => {
     return (
-        <div>
-            <h2 className="text-2xl font-bold mb-4">Inventory</h2>
+        <div className="mx-auto p-6 bg-gray-800 text-white rounded-lg shadow-lg">
+            <h2 className="text-3xl font-bold mb-6 text-center">Inventory</h2>
+
             <div className="mb-4">
-                {inventory.map((item, index) => (
-                    <div key={index} className="pl-6">{item}</div>
-                ))}
+                <h3 className="text-2xl font-semibold mb-2">Items</h3>
+                <div className="grid grid-cols-2 gap-4">
+                    {inventory.map((item, index) => (
+                        <div key={index} className="bg-gray-700 p-2 rounded-md shadow-md">
+                            {item}
+                        </div>
+                    ))}
+                </div>
             </div>
-            <div className="mt-4">
-                <h3 className="text-xl font-semibold">Currency</h3>
-                <p>{currency} gold</p>
+
+            <div className="mt-6">
+                <h3 className="text-2xl font-semibold mb-2">Currency</h3>
+                <p className="text-lg">{currency} gold</p>
             </div>
-            <div className="mt-4">
-                <h3 className="text-xl font-semibold">Abilities</h3>
-                <div className="pl-6">
+
+            <div className="mt-6">
+                <h3 className="text-2xl font-semibold mb-2">Abilities</h3>
+                <div className="grid grid-cols-1 gap-4">
                     {abilities.map((ability, index) => (
-                        <div key={index}>
+                        <div key={index} className="bg-gray-700 p-2 rounded-md shadow-md">
                             <strong>{ability.name}:</strong> {ability.description}
                         </div>
                     ))}
                 </div>
             </div>
-            <div className="mt-4">
-                <h3 className="text-xl font-semibold">Spells</h3>
-                <div className="pl-6">
+
+            <div className="mt-6">
+                <h3 className="text-2xl font-semibold mb-2">Spells</h3>
+                <div className="grid grid-cols-1 gap-4">
                     {spells.map((spell, index) => (
-                        <div key={index}>
+                        <div key={index} className="bg-gray-700 p-2 rounded-md shadow-md">
                             <strong>{spell.name}:</strong> {spell.description}
                         </div>
                     ))}
                 </div>
-            </div>
-            {stats && (
-                <div className="mt-4">
-                    <h3 className="text-xl font-semibold">Stats</h3>
-                    <div className="pl-6">
-                        <div><strong>Strength:</strong> {stats.strength}</div>
-                        <div><strong>Dexterity:</strong> {stats.dexterity}</div>
-                        <div><strong>Constitution:</strong> {stats.constitution}</div>
-                        <div><strong>Intelligence:</strong> {stats.intelligence}</div>
-                        <div><strong>Wisdom:</strong> {stats.wisdom}</div>
-                        <div><strong>Charisma:</strong> {stats.charisma}</div>
-                    </div>
-                </div>
-            )}
-            <div className="mt-4">
-                <h3 className="text-xl font-semibold">HP</h3>
-                <div className="pl-6">{hp}</div>
-            </div>
-            <div className="mt-4">
-                <h3 className="text-xl font-semibold">MP</h3>
-                <div className="pl-6">{mp}</div>
             </div>
         </div>
     );

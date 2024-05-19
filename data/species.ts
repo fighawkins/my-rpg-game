@@ -49,7 +49,7 @@ export const speciesOptions: Species[] = [
         description: ' Badgers are strong, noble, and wise creatures. Known for their bravery and fierce loyalty, Badgers have a natural authority and command respect from other creatures. They are usually associated with the role of warriors or guardians, badgers are also known for their deep sense of honor and justice, and they are formidable in battle'
     },
     {
-        name: 'Hare',
+        name: 'Rabbit',
         image: '/images/rabbit.webp',
         baseStats: {
             strength: 5,

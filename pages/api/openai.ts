@@ -27,8 +27,8 @@ const parseAIResponse = (
     currentCurrency: number,
     currentAbilities: Ability[],
     currentSpells: Spell[],
-    currentHp: Number,
-    currentMp: Number,
+    currentHp: number,
+    currentMp: number
 ) => {
     console.log("AI Response:", aiResponse);
 
@@ -38,12 +38,13 @@ const parseAIResponse = (
     let updatedSpells = [...currentSpells];
     let updatedHp = currentHp;
     let updatedMp = currentMp;
+
     const inventoryMatch = aiResponse.match(/\*\*Inventory\*\*: (.+)/);
     const currencyMatch = aiResponse.match(/\*\*Currency\*\*: (\d+) gold/);
     const abilitiesMatch = aiResponse.match(/\*\*Abilities\*\*: (.+?)(?=\*\*Spells\*\*|$)/s);
     const spellsMatch = aiResponse.match(/\*\*Spells\*\*: (.+)/);
-    const HpMatch = aiResponse.match(/\*\*HP\*\*: (.+)/);
-    const MpMatch = aiResponse.match(/\*\*MP\*\*: (.+)/);
+    const hpMatch = aiResponse.match(/\*\*HP\*\*: (\d+)/);
+    const mpMatch = aiResponse.match(/\*\*MP\*\*: (\d+)/);
 
     if (inventoryMatch) {
         const inventoryItems = inventoryMatch[1].split(',').map(item => item.trim());
@@ -53,33 +54,34 @@ const parseAIResponse = (
     if (currencyMatch) {
         updatedCurrency = parseInt(currencyMatch[1], 10);
     }
-    if (HpMatch) {
-        updatedHp = parseInt(HpMatch[1], 10);
+
+    if (hpMatch) {
+        updatedHp = parseInt(hpMatch[1], 10);
     }
-    if (MpMatch) {
-        updatedMp = parseInt(MpMatch[1], 10);
+
+    if (mpMatch) {
+        updatedMp = parseInt(mpMatch[1], 10);
     }
+
     if (abilitiesMatch) {
-        const abilitiesList = abilitiesMatch[1].split(',').map(item => item.trim());
+        const abilitiesList = abilitiesMatch[1].split(';').map(item => item.trim());
         const newAbilities = abilitiesList.map(ability => {
             const [name, description] = ability.split(':').map(str => str.trim());
             return { name, description };
         });
 
-        // Merge new abilities with existing ones, avoiding duplicates
         updatedAbilities = [...currentAbilities, ...newAbilities].filter((ability, index, self) =>
             index === self.findIndex((a) => a.name === ability.name)
         );
     }
 
     if (spellsMatch) {
-        const spellsList = spellsMatch[1].split(',').map(item => item.trim());
+        const spellsList = spellsMatch[1].split(';').map(item => item.trim());
         const newSpells = spellsList.map(spell => {
             const [name, description] = spell.split(':').map(str => str.trim());
             return { name, description };
         });
 
-        // Merge new spells with existing ones, avoiding duplicates
         updatedSpells = [...currentSpells, ...newSpells].filter((spell, index, self) =>
             index === self.findIndex((s) => s.name === spell.name)
         );
@@ -89,6 +91,8 @@ const parseAIResponse = (
     console.log("Parsed Currency:", updatedCurrency);
     console.log("Parsed Abilities:", updatedAbilities);
     console.log("Parsed Spells:", updatedSpells);
+    console.log("Parsed HP:", updatedHp);
+    console.log("Parsed MP:", updatedMp);
 
     return { updatedInventory, updatedCurrency, updatedAbilities, updatedSpells, updatedHp, updatedMp };
 };
@@ -97,12 +101,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
         const { prompt, species, characterClass, gender, name, inventory = [], currency, hp, mp, abilities = [], spells = [], stats } = req.body;
 
-        // Log the incoming request body
         console.log("Request body:", req.body);
 
-        if (!prompt || !species || !characterClass || !gender || !name || !hp || !mp || !Array.isArray(inventory) || currency === undefined || !Array.isArray(abilities) || !Array.isArray(spells) || !stats) {
+        if (!prompt || !species || !characterClass || !gender || !name || hp === undefined || mp === undefined || !Array.isArray(inventory) || currency === undefined || !Array.isArray(abilities) || !Array.isArray(spells) || !stats) {
             console.error("Missing required fields in the request body.");
-            return res.status(400).json({ error: "All fields are required: prompt, species, characterClass, gender, name, inventory, currency, abilities, spells,hp, mp, stats" });
+            return res.status(400).json({ error: "All fields are required: prompt, species, characterClass, gender, name, inventory, currency, abilities, spells, hp, mp, stats" });
         }
 
         let diceRoll;
@@ -114,7 +117,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
             const diceRollData = await diceRollResponse.json();
             diceRoll = diceRollData.roll;
-            console.log("Dice roll fetched:", diceRoll);  // Verify this log
+            console.log("Dice roll fetched:", diceRoll);
         } catch (error) {
             console.error("Error fetching dice roll:", error);
             return res.status(500).json({ error: "Failed to fetch dice roll" });
@@ -130,8 +133,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         - Abilities: ${abilities.map(ability => `${ability.name}: ${ability.description}`).join(', ')}
         - Spells: ${spells.map(spell => `${spell.name}: ${spell.description}`).join(', ')}
         - Currency: ${currency} gold
-        - HP:${hp}
-        - MP${mp}
+        - HP: ${hp}
+        - MP: ${mp}
         - Stats:
           - Strength: ${stats.strength}
           - Dexterity: ${stats.dexterity}
@@ -140,7 +143,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           - Wisdom: ${stats.wisdom}
           - Charisma: ${stats.charisma}
         - Dice Roll: ${diceRoll}
-        
+
         ### World Overview:
         ${worldOverview}
         `;
@@ -200,7 +203,7 @@ Give realistic consequences to the player's action, with nuance and complexity.
 
             const aiResponse = response.choices[0].message.content;
             console.log("OpenAI response received:", aiResponse);
-            const { updatedInventory, updatedCurrency, updatedAbilities, updatedSpells, updatedMp, updatedHp, } = parseAIResponse(aiResponse, inventory, currency, abilities, spells, hp, mp);
+            const { updatedInventory, updatedCurrency, updatedAbilities, updatedSpells, updatedHp, updatedMp } = parseAIResponse(aiResponse, inventory, currency, abilities, spells, hp, mp);
 
             return res.status(200).json({ response: aiResponse, updatedInventory, updatedCurrency, updatedAbilities, updatedSpells, updatedHp, updatedMp });
         } catch (error) {
@@ -212,10 +215,3 @@ Give realistic consequences to the player's action, with nuance and complexity.
         res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
-
-
-
-
-
-
-

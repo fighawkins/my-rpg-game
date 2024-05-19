@@ -111,6 +111,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
             setStats(combinedStats);
             setHp(initialHp);
             setMp(initialMp);
+            setInventory(charClass.startingItems); // Add starting items to inventory
         }
     };
 

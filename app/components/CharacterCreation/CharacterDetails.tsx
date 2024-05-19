@@ -50,6 +50,8 @@ export default function CharacterDetails() {
                     currency,
                     abilities,
                     spells,
+                    hp,
+                    mp,
                 }),
             });
 

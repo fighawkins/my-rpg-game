@@ -26,7 +26,9 @@ const parseAIResponse = (
     currentInventory: string[],
     currentCurrency: number,
     currentAbilities: Ability[],
-    currentSpells: Spell[]
+    currentSpells: Spell[],
+    currentHp: Number,
+    currentMp: Number,
 ) => {
     console.log("AI Response:", aiResponse);
 
@@ -34,11 +36,14 @@ const parseAIResponse = (
     let updatedCurrency = currentCurrency;
     let updatedAbilities = [...currentAbilities];
     let updatedSpells = [...currentSpells];
-
+    let updatedHp = currentHp;
+    let updatedMp = currentMp;
     const inventoryMatch = aiResponse.match(/\*\*Inventory\*\*: (.+)/);
     const currencyMatch = aiResponse.match(/\*\*Currency\*\*: (\d+) gold/);
     const abilitiesMatch = aiResponse.match(/\*\*Abilities\*\*: (.+?)(?=\*\*Spells\*\*|$)/s);
     const spellsMatch = aiResponse.match(/\*\*Spells\*\*: (.+)/);
+    const HpMatch = aiResponse.match(/\*\*HP\*\*: (.+)/);
+    const MpMatch = aiResponse.match(/\*\*MP\*\*: (.+)/);
 
     if (inventoryMatch) {
         const inventoryItems = inventoryMatch[1].split(',').map(item => item.trim());
@@ -48,7 +53,12 @@ const parseAIResponse = (
     if (currencyMatch) {
         updatedCurrency = parseInt(currencyMatch[1], 10);
     }
-
+    if (HpMatch) {
+        updatedHp = parseInt(HpMatch[1], 10);
+    }
+    if (MpMatch) {
+        updatedMp = parseInt(MpMatch[1], 10);
+    }
     if (abilitiesMatch) {
         const abilitiesList = abilitiesMatch[1].split(',').map(item => item.trim());
         const newAbilities = abilitiesList.map(ability => {
@@ -80,19 +90,19 @@ const parseAIResponse = (
     console.log("Parsed Abilities:", updatedAbilities);
     console.log("Parsed Spells:", updatedSpells);
 
-    return { updatedInventory, updatedCurrency, updatedAbilities, updatedSpells };
+    return { updatedInventory, updatedCurrency, updatedAbilities, updatedSpells, updatedHp, updatedMp };
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
-        const { prompt, species, characterClass, gender, name, inventory = [], currency, abilities = [], spells = [], stats } = req.body;
+        const { prompt, species, characterClass, gender, name, inventory = [], currency, hp, mp, abilities = [], spells = [], stats } = req.body;
 
         // Log the incoming request body
         console.log("Request body:", req.body);
 
-        if (!prompt || !species || !characterClass || !gender || !name || !Array.isArray(inventory) || currency === undefined || !Array.isArray(abilities) || !Array.isArray(spells) || !stats) {
+        if (!prompt || !species || !characterClass || !gender || !name || !hp || !mp || !Array.isArray(inventory) || currency === undefined || !Array.isArray(abilities) || !Array.isArray(spells) || !stats) {
             console.error("Missing required fields in the request body.");
-            return res.status(400).json({ error: "All fields are required: prompt, species, characterClass, gender, name, inventory, currency, abilities, spells, stats" });
+            return res.status(400).json({ error: "All fields are required: prompt, species, characterClass, gender, name, inventory, currency, abilities, spells,hp, mp, stats" });
         }
 
         let diceRoll;
@@ -120,6 +130,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         - Abilities: ${abilities.map(ability => `${ability.name}: ${ability.description}`).join(', ')}
         - Spells: ${spells.map(spell => `${spell.name}: ${spell.description}`).join(', ')}
         - Currency: ${currency} gold
+        - HP:${hp}
+        - MP${mp}
         - Stats:
           - Strength: ${stats.strength}
           - Dexterity: ${stats.dexterity}
@@ -147,6 +159,9 @@ Determine the passing score needed based on the difficulty of the action/skill c
 - Difficult tasks (e.g., actions that are challenging even for skilled characters): Passing score of 16-20.
 - Impossible tasks (e.g., actions that are beyond the character's capabilities without special circumstances): Explain why the task is impossible and suggest alternatives.
 
+For **basic actions**, respond without using a dice roll and narrate the outcome directly.
+
+
 Respond to the player's action within the narrative without disrupting the story with inventory, currency, abilities, or spells. Focus on storytelling and narrative coherence. Use the provided dice roll for any random outcomes.
 Speak in present tense.
 If the player's action is related to using an item from their inventory, apply the item's effects and remove it from the inventory. Clearly update and display the player's inventory and any changes to the player's status or stats in the format:
@@ -156,6 +171,10 @@ If the player's action is related to using an item from their inventory, apply t
 If the player's action is related to finding or obtaining an item or currency, add the item to their inventory or add the currency to their current amount. Clearly update and display the player's inventory and currency in the format:
 **Inventory**: item1, item2, item3
 **Currency**: X gold
+
+If the player's action's HP or MP are altered, Clearly update and display the player's HP and MP in the format:
+**HP**: X HP
+**MP**: X MP
 
 If the player's action is related to learning a new ability or spell, add it to their list of abilities or spells. Clearly update and display the player's abilities and spells in the format:
 **Abilities**: ability1: description1, ability2: description2
@@ -181,9 +200,9 @@ Give realistic consequences to the player's action, with nuance and complexity.
 
             const aiResponse = response.choices[0].message.content;
             console.log("OpenAI response received:", aiResponse);
-            const { updatedInventory, updatedCurrency, updatedAbilities, updatedSpells } = parseAIResponse(aiResponse, inventory, currency, abilities, spells);
+            const { updatedInventory, updatedCurrency, updatedAbilities, updatedSpells, updatedMp, updatedHp, } = parseAIResponse(aiResponse, inventory, currency, abilities, spells, hp, mp);
 
-            return res.status(200).json({ response: aiResponse, updatedInventory, updatedCurrency, updatedAbilities, updatedSpells });
+            return res.status(200).json({ response: aiResponse, updatedInventory, updatedCurrency, updatedAbilities, updatedSpells, updatedHp, updatedMp });
         } catch (error) {
             console.error("Error with OpenAI API:", error);
             return res.status(500).json({ error: error.message });

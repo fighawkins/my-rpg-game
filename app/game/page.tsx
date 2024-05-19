@@ -2,9 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '@/context/GameContext';
 import Inventory from '../components/inventory';
+import CharacterInfo from '../components/CharacterInfo';
+import GameLog from '../components/GameLog';
+import InputArea from '../components/InputArea';
+
+
 
 const GamePage: React.FC = () => {
-    const [scene, setScene] = useState<string>('');
     const [input, setInput] = useState<string>('');
     const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
     const {
@@ -20,6 +24,8 @@ const GamePage: React.FC = () => {
         mp,
         currency,
         setInventory,
+        setHp,
+        setMp,
         setCurrency,
         updateAbilitiesAndSpells
     } = useGameContext();
@@ -46,6 +52,8 @@ const GamePage: React.FC = () => {
                     abilities,
                     spells,
                     stats,
+                    hp,
+                    mp
                 }),
             });
 
@@ -54,7 +62,8 @@ const GamePage: React.FC = () => {
             }
 
             const data = await response.json();
-            setScene(data.response);
+            const initialScene = data.response;
+            setMessages([{ role: 'ai', content: initialScene }]);
         } catch (error) {
             console.error('Fetch error:', error);
         }
@@ -85,7 +94,9 @@ const GamePage: React.FC = () => {
                     currency,
                     abilities,
                     spells,
-                    stats
+                    stats,
+                    hp,
+                    mp,
                 }),
             });
 
@@ -101,12 +112,21 @@ const GamePage: React.FC = () => {
             const updatedCurrencyMatch = data.response.match(/\*\*Currency\*\*: (\d+) gold/m);
             const updatedAbilitiesMatch = data.response.match(/\*\*Abilities\*\*: (.*?)\s*$/m);
             const updatedSpellsMatch = data.response.match(/\*\*Spells\*\*: (.*?)\s*$/m);
+            const updatedHpMatch = data.response.match(/\*\*HP\*\*: (\d+) HP/m);
+            const updatedMpMatch = data.response.match(/\*\*MP\*\*: (\d+) MP/m);
+
 
             const updatedInventory = updatedInventoryMatch ? updatedInventoryMatch[1].split(', ').filter(item => item !== 'None') : inventory;
             const updatedCurrency = updatedCurrencyMatch ? parseInt(updatedCurrencyMatch[1], 10) : currency;
             const updatedAbilities = updatedAbilitiesMatch ? parseAbilities(updatedAbilitiesMatch[1]) : abilities;
             const updatedSpells = updatedSpellsMatch ? parseSpells(updatedSpellsMatch[1]) : spells;
+            const updatedHp = updatedHpMatch ? parseInt(updatedHpMatch[1], 10) : hp;
+            const updatedMp = updatedMpMatch ? parseInt(updatedMpMatch[1], 10) : mp;
 
+
+
+            setHp(updatedHp);
+            setMp(updatedMp);
             setInventory(updatedInventory);
             setCurrency(updatedCurrency);
             updateAbilitiesAndSpells(updatedAbilities, updatedSpells);
@@ -138,45 +158,19 @@ const GamePage: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-3xl space-y-6">
+        <div className="flex flex-row items-start justify-center min-h-screen bg-gray-100 p-6 space-x-4">
+            <div className="w-1/4 bg-white rounded-lg shadow-lg p-4 space-y-4">
+                <CharacterInfo species={species} characterClass={characterClass} name={name} />
+                <Inventory inventory={inventory} currency={currency} abilities={abilities} spells={spells} stats={stats} hp={hp} mp={mp} />
+            </div>
+            <div className="w-3/4 flex flex-col">
                 <header className="text-center">
                     <h1 className="text-3xl mb-2 text-gray-800">Adventure Game</h1>
                     <p className="text-lg text-gray-600">Embark on your journey and make choices to shape your destiny.</p>
                 </header>
-                <section className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    <h2 className="text-2xl mb-2 text-gray-700">Current Scene</h2>
-                    <p className="text-lg text-gray-800">{scene}</p>
-                </section>
-                <section className="flex flex-col bg-gray-50 p-4 rounded-lg border border-gray-200 max-h-80 overflow-y-auto">
-                    <h2 className="text-2xl mb-2 text-gray-700">Game Log</h2>
-                    {messages.map((message, index) => (
-                        <div key={index} className={`mb-2 ${message.role === 'ai' ? 'text-left' : 'text-right'}`}>
-                            <strong className={`${message.role === 'ai' ? 'text-green-500' : 'text-blue-500'}`}>
-                                {message.role === 'ai' ? 'AI' : 'You'}:
-                            </strong> {message.content}
-                        </div>
-                    ))}
-                </section>
+                <GameLog messages={messages} />
+                <InputArea input={input} setInput={setInput} handleUserInput={handleUserInput} />
             </div>
-            <section className="w-full max-w-3xl">
-                <Inventory inventory={inventory} currency={currency} abilities={abilities} spells={spells} stats={stats} hp={hp} mp={mp} />
-                <div className="mt-6 flex items-center space-x-4">
-                    <input
-                        type="text"
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleUserInput()}
-                    />
-                    <button
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                        onClick={handleUserInput}
-                    >
-                        Send
-                    </button>
-                </div>
-            </section>
         </div>
     );
 };

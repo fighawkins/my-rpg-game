@@ -106,37 +106,125 @@
 
 ## Villages and Towns
 
-### Mistwood Village
+## Mistwood Village
 
-- **Description**: A small village on the outskirts of Mistwood Forest.
-- **NPCs**:
-    - **Thorin the Blacksmith**: Known for crafting the finest weapons in the land.
-    - **Lina the Herbalist**: A wise hedgehog known for her knowledge of herbs and remedies.
-- **Monsters**:
-    - **Weasels**: Bandit types, often harass the village.
-- **Possible Side Quests**:
-    - Thorin needs materials to craft a special weapon.
-    - Lina requires rare herbs from deep within the forest.
-    - Defending the village from a weasel raid.
+### Description
+A quaint settlement on the edge of Mistwood Forest. Known for its rustic charm, the village is surrounded by towering trees and is often shrouded in a gentle mist. The village is a hub for travelers and adventurers heading into the forest, making it a place of constant, though modest, activity.
 
-### Stonebrook
+### History
+Founded by a group of wanderers who sought refuge from the dangers of the forest, Mistwood Village has a rich history of cooperation and resilience. The village grew around a central square where travelers could rest and trade stories. Over time, it became known for its skilled artisans and the powerful enchantress Elara, who chose to settle there.
 
-- **Description**: A bustling town with a market, barracks, and various shops.
-- **NPCs**:
-    - **Captain Alden**: Leader of the town's guard.
-    - **Marla the Merchant**: Runs the general store and has connections with traders.
-- **Monsters**:
-    - **Weasels**: Occasionally attempt to rob traders.
-- **Possible Side Quests**:
-    - Assisting Captain Alden in a defense mission.
-    - Helping Marla with a trade negotiation.
-    - Investigating mysterious disappearances in the town.
-- **Shops**:
-    - **General Store**: Sells various supplies and goods.
-    - **Blacksmith**: Offers weapons and armor.
-- **Main Quest Points**:
-    - Gathering information about Zarok the Necromancer.
-    - Recruiting allies for the journey to Blackrock Mountain.
+### Vibe
+The atmosphere in Mistwood Village is tranquil yet bustling with the energy of a community that thrives on mutual support and the flow of visitors. The villagers are friendly and always willing to share a tale or a cup of tea.
+
+### NPCs
+- **Garrett the Fisher (Otter)**: Expert in catching fish from the nearby river.
+  - **Personality**: Friendly, patient, and knowledgeable about the river's secrets, but can be overly chatty.
+  - **Relationships**: Friends with Nessa the Farmer, supplies fish to Fiona the Baker.
+- **Liora the Herbalist (Deer)**: Known for her healing potions and remedies.
+  - **Personality**: Gentle, wise, and nurturing, but can be overly cautious.
+  - **Relationships**: Close friends with Maura the Tailor, often trades herbs with Gideon the Guard.
+- **Eldon the Carpenter (Beaver)**: Known for his exquisite woodwork, supplies furniture and repairs.
+  - **Personality**: Diligent, meticulous, and dependable, but can be overly critical of others' work.
+  - **Relationships**: Works with Garrett the Fisher on building fishing boats, neighbors with Orin the Innkeeper.
+- **Maura the Tailor (Mouse)**: Creates beautiful garments and textiles, often using materials from the forest.
+  - **Personality**: Creative, meticulous, and friendly, but can be sensitive to criticism.
+  - **Relationships**: Close friends with Liora the Herbalist, often makes clothes for Fiona the Baker.
+- **Gideon the Guard (Owl)**: Responsible for the village's security, often patrols the perimeter.
+  - **Personality**: Disciplined, courageous, and protective, but can be overly stern.
+  - **Relationships**: Friends with Eldon the Carpenter, helps Maura the Tailor gather materials.
+- **Nessa the Farmer (Hedgehog)**: Tends to the village's crops and livestock.
+  - **Personality**: Hardworking, nurturing, and patient, but can be stubborn.
+  - **Relationships**: Close friends with Garrett the Fisher, supplies produce to Orin the Innkeeper.
+
+### Shops and Points of Interest
+- **The Fisher's Hut**: Run by Garrett, sells fresh fish and fishing supplies.
+- **Liora's Herbal Shop**: Sells herbs, remedies, and potions.
+- **The Carpenter's Workshop**: Eldon's place for furniture and wooden crafts.
+- **Maura's Tailoring**: Offers custom-made clothing and textiles.
+- **The Guard's Barracks**: Where Gideon and the village guards stay and train.
+- **The Farmhouse**: Nessa's farm where she grows crops and raises livestock.
+
+### Possible Quests
+- Help Garrett catch a rare fish.
+- Assist Liora in finding rare herbs.
+- Collect special wood for Eldon's new project.
+- Help Maura create a special garment.
+- Assist Gideon in fending off a bandit attack.
+- Help Nessa with the harvest.
+
+### Possible Gossip and Rumors
+- "Have you heard? Garrett thinks there's a giant fish in the river."
+- "Liora's been acting strange lately, spending more time in the forest."
+- "Eldon is working on a secret project. I wonder what it could be."
+- "Maura received an order from someone important in Stonebrook."
+- "Gideon's been on edge recently, says he's seen shadows in the forest."
+- "Nessa's crops have been growing exceptionally well this year."
+
+### Main Quest Plot Points
+- Gather information about the troupe that visited Bramble.
+- Find clues about the whereabouts of the kidnapped children.
+- Seek help from Elara the Mage to track down Conan the Cat.
+
+## Stonebrook
+
+### Description
+A bustling town located along the banks of a wide, fast-flowing river. Stonebrook is known for its vibrant market and the stone bridge that connects the two halves of the town. The town is a center of trade and commerce, with a lively atmosphere and a diverse population.
+
+### History
+Stonebrook was established as a trading post due to its strategic location by the river. Over the years, it grew into a bustling town as more traders and craftsmen settled in the area. The stone bridge, built by the town's founders, is a symbol of the town's resilience and unity.
+
+### Vibe
+Stonebrook has a lively and energetic vibe, with merchants calling out their wares and residents bustling about their daily routines. The town is a melting pot of different cultures and backgrounds, creating a rich tapestry of traditions and customs.
+
+### NPCs
+- **Cedric the Merchant (Fox)**: Owns a general store that sells a variety of goods.
+  - **Personality**: Shrewd, charismatic, and resourceful, but can be greedy.
+  - **Relationships**: Regularly trades with Hilda the Innkeeper, rivals with Bram the Blacksmith.
+- **Hilda the Innkeeper (Bear)**: Runs the town's inn, offering food and lodging to travelers.
+  - **Personality**: Hospitable, motherly, and strong, but can be overprotective.
+  - **Relationships**: Friends with Isla the Baker, often hosts gatherings for Talia the Weaver.
+- **Bram the Blacksmith (Wolf)**: Skilled in crafting weapons and tools.
+  - **Personality**: Gruff, hardworking, and loyal, but can be stubborn.
+  - **Relationships**: Often works with Fenn the Fisher, rivals with Cedric the Merchant.
+- **Talia the Weaver (Spider)**: Creates intricate fabrics and tapestries.
+  - **Personality**: Creative, patient, and meticulous, but can be reclusive.
+  - **Relationships**: Friends with Hilda the Innkeeper, supplies fabrics to Isla the Baker.
+- **Fenn the Fisher (Otter)**: Expert in catching fish from the river.
+  - **Personality**: Friendly, adventurous, and knowledgeable about the river, but can be reckless.
+  - **Relationships**: Supplies fish to Hilda the Innkeeper and Isla the Baker.
+- **Isla the Baker (Squirrel)**: Known for her delicious bread and pastries.
+  - **Personality**: Cheerful, creative, and generous, but can be scatterbrained.
+  - **Relationships**: Close friends with Hilda the Innkeeper, uses Talia's fabrics for her bakery's decorations.
+
+### Shops and Points of Interest
+- **The General Store**: Run by Cedric, offers a variety of goods and supplies.
+- **The Riverside Inn**: Managed by Hilda, provides food and lodging for travelers.
+- **The Blacksmith's Forge**: Operated by Bram, offers weapons, tools, and repairs.
+- **The Weaver's Hut**: Talia's shop for fabrics, tapestries, and custom orders.
+- **The Bakery**: Run by Isla, known for delicious bread and pastries.
+- **The Fisher's Market**: Fenn's stall for fresh fish and seafood.
+
+### Possible Quests
+- Assist Cedric in securing a valuable trade deal.
+- Help Hilda prepare for a large feast.
+- Collect rare metals for Bram's new weapon.
+- Assist Talia in finding inspiration for a new tapestry.
+- Help Fenn catch a legendary fish.
+- Assist Isla in baking a massive order for a festival.
+
+### Possible Gossip and Rumors
+- "Cedric's been acting suspicious lately, wonder what he's up to."
+- "Hilda is planning something big at the inn, I heard she's hosting a noble."
+- "Bram's working on a weapon that will surpass all others."
+- "Talia received a mysterious fabric order from a faraway land."
+- "Fenn's been talking about a fish as big as a boat in the river."
+- "Isla's pastries are so good, they say she's using a secret ingredient."
+
+### Main Quest Plot Points
+- Gather information about Zarok the Necromancer.
+- Recruit allies for the journey to Blackrock Mountain.
+- Find supplies and prepare for the journey ahead.
 
 ## Major Villains
 
@@ -187,15 +275,42 @@
 - **Player Interaction**: Before resolving an action, ask the player to confirm or provide additional input.
 - **Dice Roll Narration**: Clearly narrate the dice roll and show the randomly calculated number between 1 and 20, then describe the outcome based on the roll.
 - **Concise and Relevant Responses**: Provide concise and relevant responses to the player's specific questions or actions without veering off-topic. If the player asks a specific question, answer directly and briefly, unless additional context is necessary.
-
+- **Triggers and Setups**: Establish triggers and setups for encounters. Allow the player to naturally come across these setups through exploration and actions rather than forcing encounters based on location alone.
 ## Combat Rules and Guidelines for the DM
 
-- **Initiative**: Determine the order of actions in combat based on player and enemy stats.
-- **Actions**: Players can attack, defend, use abilities or spells, and interact with the environment.
-- **Damage**: Calculate damage based on weapon stats, abilities, and enemy defenses.
-- **Special Abilities and Spells**: Use character and enemy abilities strategically to add depth to combat.
-- **Fleeing**: Allow players and enemies to attempt to flee from combat, with consequences.
-- **Dice Rolls**: Use the dice roll provided in the context for all random outcomes. Do not generate your own random numbers.
-- **Skill Checks**: Incorporate skill checks for actions like intimidation, persuasion, stealth, and others, using dice rolls to determine outcomes.
-- **Narration**: Narrate the outcomes of actions based on the dice rolls in a way that enhances the story and keeps the player engaged.
-- **Triggers and Setups**: Establish triggers and setups for encounters. Allow the player to naturally come across these setups through exploration and actions rather than forcing encounters based on location alone.
+
+- **Initiative**: 
+  - Determine the order of actions in combat based on player and enemy stats.
+  - Clearly narrate the dice rolls for determining initiative.
+
+- **Actions**: 
+  - Allow the player to choose actions such as attacking, defending, using abilities or spells, or interacting with the environment.
+  - Present the available options clearly to the player after describing the initial combat setup.
+  -go turn by turn, one character at a time, in a fair and balanced way, back and forth until a victor emerges, or a resolution is made.
+
+- **NPC Actions**:
+  - The AI controls the NPCs, determining their actions based on their unique abilities, spells, items, and stats.
+  - NPC actions should complement the player's actions and provide strategic depth to the combat.
+
+- **Damage and Combat**: 
+  - Calculate damage based on weapon stats, abilities, and enemy defenses.
+  - Narrate the dice rolls and outcomes for each action to make the player feel the impact.
+  - Track HP for both players and enemies, and narrate the remaining HP for both sides.
+
+- **Special Abilities and Spells**: 
+  - Use character and enemy abilities strategically to add depth to combat.
+  - Describe the effects of abilities and spells vividly to enhance immersion.
+
+- **Fleeing**: 
+  - Allow players and enemies to attempt to flee from combat, with dice rolls determining success and consequences narrated.
+
+- **Skill Checks**: 
+  - Use dice rolls for actions like intimidation, persuasion, stealth, and others during combat.
+
+- **Narration**: 
+  - Narrate the outcomes of actions based on the dice rolls in a way that enhances the story and keeps the player engaged.
+  - Before resolving an action, ask the player to confirm or provide additional input.
+
+- **HP and MP Management**:
+  - Track HP for both players and enemies. Announce current HP for the player’s party and approximate HP for enemies at the start and end of each combat round.
+  - Use MP for casting spells or using abilities. Announce MP usage and remaining MP for the player's character.

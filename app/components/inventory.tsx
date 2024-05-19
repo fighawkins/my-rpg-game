@@ -22,7 +22,7 @@ type InventoryProps = {
 
 const Inventory: React.FC<InventoryProps> = ({ inventory, currency, abilities, spells, stats, hp, mp }) => {
     return (
-        <div className="bg-white p-4 rounded-lg shadow-md">
+        <div>
             <h2 className="text-2xl font-bold mb-4">Inventory</h2>
             <div className="mb-4">
                 {inventory.map((item, index) => (

@@ -4,7 +4,6 @@ import { useGameContext } from '@/context/GameContext';
 import { speciesOptions } from '@/data/species';
 import { classOptions } from '@/data/classes';
 import Link from 'next/link';
-import Inventory from '../inventory';
 
 export default function CharacterDetails() {
     const { species, gender, characterClass, name, inventory, currency, abilities, stats, hp, mp, spells, setName, initializeCharacter, setInventory, setCurrency, setAbilities, setSpells } = useGameContext();
@@ -88,36 +87,71 @@ export default function CharacterDetails() {
     const characterImage = classDetails ? classDetails[gender === 'male' ? 'maleImage' : 'femaleImage'] : '';
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-4">
-            <div className="w-full max-w-md p-4 bg-white rounded-lg shadow-md overflow-y-auto">
-                <h2 className="text-4xl font-bold mb-4 text-gray-800">Character Details</h2>
+        <div className="flex flex-col items-center justify-center min-h-screen  p-4 text-black">
+            <div className="bg-[#FFFDDD] rounded-lg shadow-lg p-6 w-full max-w-4xl text-center">
+                <h2 className="text-4xl font-bold mb-4 text-black">Character Details</h2>
                 <div className="mb-4">
-                    <label className="text-xl font-semibold">What is your name?</label>
+                    <label className="text-xl font-semibold text-black">What is your name?</label>
                     <input
                         type="text"
                         value={localName}
                         onChange={handleChange}
-                        className="block w-full mt-2 px-4 py-2 border border-gray-300 rounded-md"
+                        className="block w-full max-w-xs mx-auto mt-2 px-3 py-2 border border-gray-300 rounded-md text-black"
                     />
                 </div>
                 <div className="w-full">
-                    <h3 className="text-2xl font-bold mb-4 text-center">Character Sheet</h3>
+                    <h3 className="text-3xl font-bold mb-4 text-center text-black">Character Sheet</h3>
                     <img
                         src={characterImage}
                         alt={`${species} ${characterClass}`}
-                        className="w-full h-auto object-cover rounded-md mb-4"
+                        className="w-full h-auto max-w-[400px] object-cover rounded-md mb-4 mx-auto"
                     />
-                    <p><strong>Species:</strong> {species}</p>
-                    <p><strong>Class:</strong> {characterClass}</p>
-                    <p><strong>Name:</strong> {localName}</p>
-
-                    <div className="mt-4">
-
+                    <p className="text-black"><strong>Species:</strong> {species}</p>
+                    <p className="text-black"><strong>Class:</strong> {characterClass}</p>
+                    <p className="text-black"><strong>Name:</strong> {localName}</p>
+                    <div className="mt-4 flex flex-row justify-center gap-6 text-left flex-wrap">
+                        <div className="flex-1 min-w-[200px]">
+                            <h3 className="text-2xl font-semibold mb-2 text-black">Inventory</h3>
+                            <ul className="list-disc list-inside text-black">
+                                {inventory.map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                ))}
+                            </ul>
+                            <p className="text-black mt-2"><strong>Currency:</strong> {currency} gold</p>
+                        </div>
+                        <div className="flex-1 min-w-[200px]">
+                            <h3 className="text-2xl font-semibold mb-2 text-black">Abilities</h3>
+                            <ul className="list-disc list-inside text-black">
+                                {abilities.map((ability, index) => (
+                                    <li key={index}><strong>{ability.name}:</strong> {ability.description}</li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="flex-1 min-w-[200px]">
+                            <h3 className="text-2xl font-semibold mb-2 text-black">Spells</h3>
+                            <ul className="list-disc list-inside text-black">
+                                {spells.map((spell, index) => (
+                                    <li key={index}><strong>{spell.name}:</strong> {spell.description}</li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="flex-1 min-w-[200px]">
+                            <h3 className="text-2xl font-semibold mb-2 text-black">Stats</h3>
+                            <ul className="list-none text-black">
+                                <li><strong>Strength:</strong> {stats.strength}</li>
+                                <li><strong>Dexterity:</strong> {stats.dexterity}</li>
+                                <li><strong>Constitution:</strong> {stats.constitution}</li>
+                                <li><strong>Intelligence:</strong> {stats.intelligence}</li>
+                                <li><strong>Wisdom:</strong> {stats.wisdom}</li>
+                                <li><strong>Charisma:</strong> {stats.charisma}</li>
+                                <li><strong>HP:</strong> {hp}</li>
+                                <li><strong>MP:</strong> {mp}</li>
+                            </ul>
+                        </div>
                     </div>
-                    <Inventory inventory={inventory} currency={currency} abilities={abilities} spells={spells} stats={stats} hp={hp} mp={mp} />
                 </div>
                 <Link href="/game">
-                    <button onClick={handleBeginGame} className="mt-8 px-6 py-3 bg-green-500 text-white text-xl rounded-lg shadow-md hover:bg-green-600 transition-colors duration-300 w-full">
+                    <button onClick={handleBeginGame} className="mt-8 px-6 py-3 bg-green-600 text-white text-lg rounded-lg shadow-md hover:bg-green-700 transition-colors">
                         Begin Game
                     </button>
                 </Link>

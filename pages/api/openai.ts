@@ -66,14 +66,17 @@ const parseAIResponse = (
     if (abilitiesMatch) {
         const abilitiesList = abilitiesMatch[1].split(';').map(item => item.trim());
         const newAbilities = abilitiesList.map(ability => {
-            const [name, description] = ability.split(':').map(str => str.trim());
-            return { name, description };
+            const [name, ...descriptionParts] = ability.split(':');
+            const description = descriptionParts.join(':').trim();
+            return { name: name.trim(), description };
         });
 
         updatedAbilities = [...currentAbilities, ...newAbilities].filter((ability, index, self) =>
             index === self.findIndex((a) => a.name === ability.name)
         );
     }
+
+
 
     if (spellsMatch) {
         const spellsList = spellsMatch[1].split(';').map(item => item.trim());

@@ -26,70 +26,80 @@ export default function ClassSelection() {
     const currentClass: Class = classOptions[currentClassIndex];
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-            <h2 className="text-3xl font-bold mb-4">Select Your Class</h2>
-            <div className="text-2xl font-semibold mb-2">{currentClass.name}</div>
-
-            <div className="relative flex items-center justify-center w-full max-w-3xl h-1/2">
-                <FaArrowLeft
-                    onClick={handlePrev}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 text-3xl cursor-pointer"
-                />
-                <img
-                    src={localGender === 'male' ? currentClass.species[species].maleImage : currentClass.species[species].femaleImage}
-                    alt={currentClass.name}
-                    className="w-full h-auto max-w-[400px] object-cover transition-transform duration-500 ease-in-out mx-4"
-                    key={currentClassIndex}
-                />
-                <FaArrowRight
-                    onClick={handleNext}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-3xl cursor-pointer"
-                />
-            </div>
-            <div className="flex space-x-4 mt-4">
-                <button
-                    className={`px-4 py-2 ${localGender === 'male' ? 'bg-blue-500' : 'bg-gray-300'} text-white rounded`}
-                    onClick={() => setLocalGender('male')}
-                >
-                    Male
-                </button>
-                <button
-                    className={`px-4 py-2 ${localGender === 'female' ? 'bg-pink-500' : 'bg-gray-300'} text-white rounded`}
-                    onClick={() => setLocalGender('female')}
-                >
-                    Female
-                </button>
-            </div>
-            <div className="flex flex-row justify-between mt-4 w-full max-w-2xl">
-                <div className="text-lg">
-                    <div className="font-semibold">Stat Modifiers:</div>
-                    <ul className="list-disc list-inside">
-                        <li>Strength: {currentClass.statModifiers.strength}</li>
-                        <li>Dexterity: {currentClass.statModifiers.dexterity}</li>
-                        <li>Constitution: {currentClass.statModifiers.constitution}</li>
-                        <li>Intelligence: {currentClass.statModifiers.intelligence}</li>
-                        <li>Wisdom: {currentClass.statModifiers.wisdom}</li>
-                        <li>Charisma: {currentClass.statModifiers.charisma}</li>
-                    </ul>
-
+        <div className="flex flex-col items-center justify-center min-h-screen  p-4 text-black">
+            <div className=" bg-[#FFFDDD] rounded-lg shadow-lg p-6 w-full max-w-4xl mb-6 text-center">
+                <h2 className="text-4xl font-bold mb-4 text-black">Select Your Class</h2>
+                <div className="text-3xl font-semibold mb-4 text-black">{currentClass.name}</div>
+                <div className="relative mx-auto flex items-center justify-center w-full max-w-3xl mb-6">
+                    <FaArrowLeft
+                        onClick={handlePrev}
+                        className="absolute left-0 top-1/2 transform -translate-y-1/2 text-4xl cursor-pointer text-gray-700 hover:text-gray-900 transition-colors"
+                    />
+                    <img
+                        src={localGender === 'male' ? currentClass.species[species].maleImage : currentClass.species[species].femaleImage}
+                        alt={currentClass.name}
+                        className="w-full h-auto max-w-[400px] object-cover rounded-lg shadow-lg transition-transform duration-500 ease-in-out mx-4"
+                        key={currentClassIndex}
+                    />
+                    <FaArrowRight
+                        onClick={handleNext}
+                        className="absolute right-0 top-1/2 transform -translate-y-1/2 text-4xl cursor-pointer text-gray-700 hover:text-gray-900 transition-colors"
+                    />
                 </div>
-                <div className="font-semibold">HP: {currentClass.startingHP}</div>
-                <div className="font-semibold mb-4">MP: {currentClass.startingMP}</div>
-                <div className="text-lg">
-                    <div className="font-semibold">Starting Items:</div>
-                    <ul className="list-disc list-inside">
-                        {currentClass.startingItems.map((item, index) => (
-                            <li key={index}>{item}</li>
-                        ))}
-                    </ul>
+                <div className="flex space-x-4 justify-center mb-4">
+                    <button
+                        className={`px-4 py-2 ${localGender === 'male' ? 'bg-blue-600' : 'bg-gray-400'} text-white rounded hover:bg-blue-700 transition-colors`}
+                        onClick={() => setLocalGender('male')}
+                    >
+                        Male
+                    </button>
+                    <button
+                        className={`px-4 py-2 ${localGender === 'female' ? 'bg-pink-600' : 'bg-gray-400'} text-white rounded hover:bg-pink-700 transition-colors`}
+                        onClick={() => setLocalGender('female')}
+                    >
+                        Female
+                    </button>
                 </div>
             </div>
+
+            <div className=" bg-[#FFFDDD] rounded-lg shadow-lg p-6 w-full max-w-4xl text-center">
+                <h3 className="text-2xl font-semibold mb-4 text-black">Class Description</h3>
+                <p className="text-lg mb-6 text-black">{currentClass.description}</p>
+                <div className="flex flex-col md:flex-row justify-center items-start space-y-4 md:space-y-0 md:space-x-6">
+                    <div>
+                        <h3 className="text-2xl font-semibold mb-2 text-black">Stat Modifiers</h3>
+                        <ul className="list-disc list-inside text-lg text-black">
+                            <li>Strength: {currentClass.statModifiers.strength}</li>
+                            <li>Dexterity: {currentClass.statModifiers.dexterity}</li>
+                            <li>Constitution: {currentClass.statModifiers.constitution}</li>
+                            <li>Intelligence: {currentClass.statModifiers.intelligence}</li>
+                            <li>Wisdom: {currentClass.statModifiers.wisdom}</li>
+                            <li>Charisma: {currentClass.statModifiers.charisma}</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 className="text-2xl font-semibold mb-2 text-black">HP & MP</h3>
+                        <ul className="list-none text-lg text-black">
+                            <li><strong>HP:</strong> {currentClass.startingHP}</li>
+                            <li><strong>MP:</strong> {currentClass.startingMP}</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 className="text-2xl font-semibold mb-2 text-black">Starting Items</h3>
+                        <ul className="list-disc list-inside text-lg text-black">
+                            {currentClass.startingItems.map((item, index) => (
+                                <li key={index}>{item}</li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
             <Link href="/character-creation/details">
-                <button onClick={handleChoose} className="mt-4 px-4 py-2 bg-green-500 text-white rounded">
+                <button onClick={handleChoose} className="mt-8 px-8 py-3 bg-green-600 text-white text-lg rounded-lg shadow-md hover:bg-green-700 transition-colors">
                     Choose
                 </button>
             </Link>
         </div>
-
     );
 }

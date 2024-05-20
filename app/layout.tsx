@@ -1,9 +1,11 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Cormorant_Garamond } from 'next/font/google';
 import "./globals.css";
 import { GameProvider } from "@/context/GameContext";
 
-const inter = Inter({ subsets: ["latin"] });
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"]
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={cormorantGaramond.className}>
         <GameProvider>
           {children}
         </GameProvider>

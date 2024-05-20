@@ -315,3 +315,4 @@ Stonebrook has a lively and energetic vibe, with merchants calling out their war
 - **HP and MP Management**:
   - Track HP for both players and enemies. Announce current HP for the player’s party and approximate HP for enemies at the start and end of each combat round.
   - Use MP for casting spells or using abilities. Announce MP usage and remaining MP for the player's character.
+  - When a player casts spells, they should cost a small amount of mp, which should be deducted from the players MP total.

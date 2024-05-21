@@ -50,33 +50,36 @@ const GamePage: React.FC = () => {
 
     const fetchInitialScene = async () => {
         try {
+            const payload = {
+                prompt: "You are a dungeon master. Set the scene for the beginning of the adventure. Keep it concise under three sentences, and end by asking the player what they want to do. The player will respond with whatever they see fit.",
+                species,
+                characterClass,
+                gender,
+                name,
+                inventory,
+                weapons,
+                armor,
+                shields,
+                consumables,
+                misc,
+                equippedWeapon,
+                equippedArmor,
+                equippedShield,
+                currency,
+                abilities,
+                spells,
+                stats,
+                hp,
+                mp
+            };
+            console.log('Payload for initial scene:', payload);
+
             const response = await fetch('/api/openai', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    prompt: "You are a dungeon master. Set the scene for the beginning of the adventure. Keep it concise under three sentences, and end by asking the player what they want to do. The player will respond with whatever they see fit.",
-                    species,
-                    characterClass,
-                    gender,
-                    name,
-                    inventory,
-                    weapons,
-                    armor,
-                    shields,
-                    consumables,
-                    misc,
-                    equippedWeapon,
-                    equippedArmor,
-                    equippedShield,
-                    currency,
-                    abilities,
-                    spells,
-                    stats,
-                    hp,
-                    mp
-                }),
+                body: JSON.stringify(payload),
             });
 
             if (!response.ok) {
@@ -97,37 +100,48 @@ const GamePage: React.FC = () => {
         setInput('');
 
         try {
+            const contextMessages = messages.map(msg => `${msg.role}: ${msg.content}`).join('\n');
+            const payload = {
+                prompt: `You are a dungeon master. Continue the story based on the following context and player's action. Do not repeat information already provided in previous responses. Respond concisely, and end with "What would you like to do next?".
+        
+                    Context: ${contextMessages}
+                    Player's action: ${input}
+                    Species: ${species}, Character Class: ${characterClass}, Gender: ${gender}, Name: ${name}, 
+                    Inventory: ${inventory.map(item => `${item.name}: ${item.description}`).join(', ')}, 
+                    Weapons: ${weapons.map(weapon => `${weapon.name}: ${weapon.description} (${weapon.attributes.damage} damage)`).join(', ')}, 
+                    Armor: ${armor.map(a => `${a.name}: ${a.description}`).join(', ')}, 
+                    Equipped Weapon: ${equippedWeapon ? `${equippedWeapon.name}: ${equippedWeapon.description} (${equippedWeapon.attributes.damage} damage)` : 'None'}, 
+                    Equipped Armor: ${equippedArmor ? `${equippedArmor.name}: ${equippedArmor.description}` : 'None'}, 
+                    Equipped Shield: ${equippedShield ? `${equippedShield.name}: ${equippedShield.description}` : 'None'},
+                    Currency: ${currency}`,
+                species,
+                characterClass,
+                gender,
+                name,
+                inventory,
+                weapons,
+                armor,
+                shields,
+                consumables,
+                misc,
+                equippedWeapon,
+                equippedArmor,
+                equippedShield,
+                currency,
+                abilities,
+                spells,
+                stats,
+                hp,
+                mp,
+            };
+            console.log('Payload for user input:', payload);
+
             const response = await fetch('/api/openai', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    prompt: `You are a dungeon master. Continue the story based on the following context and player's action. Do not repeat information already provided in previous responses. Respond concisely, and end with "What would you like to do next?".
-        
-                    Context: ${messages.map(msg => `${msg.role}: ${msg.content}`).join('\n')}
-                    Player's action: ${input}
-                    Species: ${species}, Character Class: ${characterClass}, Gender: ${gender}, Name: ${name}, Inventory: ${inventory.map(item => item.name).join(', ')}, Weapons: ${weapons.map(w => w.name).join(', ')}, Armor: ${armor.map(a => a.name).join(', ')}, Shields: ${shields.map(s => s.name).join(', ')}, Consumables: ${consumables.map(c => c.name).join(', ')}, Misc: ${misc.map(m => m.name).join(', ')}, Equipped Weapon: ${equippedWeapon ? equippedWeapon.name : 'None'}, Equipped Armor: ${equippedArmor ? equippedArmor.name : 'None'}, Equipped Shield: ${equippedShield ? equippedShield.name : 'None'}, Currency: ${currency}`,
-                    species,
-                    characterClass,
-                    gender,
-                    name,
-                    inventory,
-                    weapons,
-                    armor,
-                    shields,
-                    consumables,
-                    misc,
-                    equippedWeapon,
-                    equippedArmor,
-                    equippedShield,
-                    currency,
-                    abilities,
-                    spells,
-                    stats,
-                    hp,
-                    mp,
-                }),
+                body: JSON.stringify(payload),
             });
 
             if (!response.ok) {
@@ -168,6 +182,10 @@ const GamePage: React.FC = () => {
             setEquippedArmor(updatedEquippedArmor);
             setEquippedShield(updatedEquippedShield);
             updateAbilitiesAndSpells(updatedAbilities, updatedSpells);
+
+            if (!aiMessage.content.endsWith("What would you like to do next?")) {
+                aiMessage.content += " What would you like to do next?";
+            }
 
             setMessages((prevMessages) => [...prevMessages, aiMessage]);
         } catch (error) {

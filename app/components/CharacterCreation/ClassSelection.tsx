@@ -2,9 +2,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import { Class, classOptions } from '@/data/classes';
+import { classOptions } from '@/data/classes';
 import { useGameContext } from '@/context/GameContext';
-import { items } from '@/data/itemSchema'; // Updated import
+import { items, } from '@/data/itemSchema'; // Updated import
+import { shields } from '@/data/shields';
 
 const ClassSelection = () => {
     const { species, gender, setGender, setCharacterClass, initializeCharacter } = useGameContext();
@@ -108,6 +109,15 @@ const ClassSelection = () => {
                             {selectedClass.startingArmor.map((armorName, index) => {
                                 const armor = items.find(item => item.name === armorName && item.type === 'armor');
                                 return armor ? <li key={index}>{armor.name}: {armor.description}</li> : null;
+                            })}
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 className="text-2xl font-semibold mb-2 text-black">Starting Shields</h3>
+                        <ul className="list-disc list-inside text-lg text-black">
+                            {selectedClass.startingShields.map((shieldName, index) => {
+                                const shield = shields.find((item: { name: string; }) => item.name === shieldName);
+                                return shield ? <li key={index}>{shield.name}: {shield.description}</li> : null;
                             })}
                         </ul>
                     </div>

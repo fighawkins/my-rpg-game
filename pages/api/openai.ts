@@ -55,106 +55,63 @@ const parseAIResponse = (
     let updatedEquippedArmor = currentEquippedArmor;
     let updatedEquippedShield = currentEquippedShield;
 
-    const inventoryMatch = aiResponse.match(/\*\*Inventory\*\*: (.+)/);
-    const currencyMatch = aiResponse.match(/\*\*Currency\*\*: (\d+) gold/);
-    const abilitiesMatch = aiResponse.match(/\*\*Abilities\*\*: (.+?)(?=\*\*Spells\*\*|$)/s);
-    const spellsMatch = aiResponse.match(/\*\*Spells\*\*: (.+)/);
-    const hpMatch = aiResponse.match(/\*\*HP\*\*: (\d+)/);
-    const mpMatch = aiResponse.match(/\*\*MP\*\*: (\d+)/);
-    const equippedWeaponMatch = aiResponse.match(/\*\*Equipped Weapon\*\*: (.+)/);
-    const equippedArmorMatch = aiResponse.match(/\*\*Equipped Armor\*\*: (.+)/);
-    const equippedShieldMatch = aiResponse.match(/\*\*Equipped Shield\*\*: (.+)/);
-
+    // Update inventory
+    const inventoryMatch = aiResponse.match(/\*\*Inventory\*\*: (.+?)(?=\*\*|\n|$)/);
     if (inventoryMatch) {
-        const inventoryItems = inventoryMatch[1].split(',').map(item => item.trim()).filter(item => item !== '');
-        inventoryItems.forEach(itemName => {
-            const item = items.find(i => i.name === itemName);
-            if (item) {
-                switch (item.type) {
-                    case 'weapon':
-                        updatedWeapons.push(item);
-                        break;
-                    case 'armor':
-                        updatedArmor.push(item);
-                        break;
-                    case 'shield':
-                        updatedShields.push(item);
-                        break;
-                    case 'consumable':
-                        updatedConsumables.push(item);
-                        break;
-                    case 'misc':
-                    default:
-                        updatedMisc.push(item);
-                        break;
-                }
-            } else {
-                const classifiedItem = classifyItem(itemName, itemName);
-                switch (classifiedItem.type) {
-                    case 'weapon':
-                        updatedWeapons.push(classifiedItem);
-                        break;
-                    case 'armor':
-                        updatedArmor.push(classifiedItem);
-                        break;
-                    case 'shield':
-                        updatedShields.push(classifiedItem);
-                        break;
-                    case 'consumable':
-                        updatedConsumables.push(classifiedItem);
-                        break;
-                    case 'misc':
-                    default:
-                        updatedMisc.push(classifiedItem);
-                        break;
-                }
-            }
-        });
+        const inventoryItems = inventoryMatch[1].split(',').map(item => item.trim());
+        updatedInventory = inventoryItems.map(itemName => items.find(item => item.name === itemName) || { name: itemName, type: 'misc', description: 'Unknown item', weight: 0, equippable: false });
+        updatedWeapons = updatedInventory.filter(item => item.type === 'weapon');
+        updatedArmor = updatedInventory.filter(item => item.type === 'armor');
+        updatedShields = updatedInventory.filter(item => item.type === 'shield');
+        updatedConsumables = updatedInventory.filter(item => item.type === 'consumable');
+        updatedMisc = updatedInventory.filter(item => item.type === 'misc');
     }
 
+    // Update currency
+    const currencyMatch = aiResponse.match(/\*\*Currency\*\*: (\d+) gold/);
     if (currencyMatch) {
         updatedCurrency = parseInt(currencyMatch[1], 10);
     }
 
+    // Update HP and MP
+    const hpMatch = aiResponse.match(/\*\*HP\*\*: (\d+)/);
     if (hpMatch) {
         updatedHp = parseInt(hpMatch[1], 10);
     }
-
+    const mpMatch = aiResponse.match(/\*\*MP\*\*: (\d+)/);
     if (mpMatch) {
         updatedMp = parseInt(mpMatch[1], 10);
     }
 
+    // Update abilities
+    const abilitiesMatch = aiResponse.match(/\*\*Abilities\*\*: (.+?)(?=\*\*|\n|$)/);
+    if (abilitiesMatch) {
+        const abilitiesList = abilitiesMatch[1].split(',').map(name => name.trim());
+        updatedAbilities = abilitiesList.map(name => abilities.find(ability => ability.name === name) || { name, description: 'Unknown ability' });
+    }
+
+    // Update spells
+    const spellsMatch = aiResponse.match(/\*\*Spells\*\*: (.+?)(?=\*\*|\n|$)/);
+    if (spellsMatch) {
+        const spellsList = spellsMatch[1].split(',').map(name => name.trim());
+        updatedSpells = spellsList.map(name => spells.find(spell => spell.name === name) || { name, description: 'Unknown spell' });
+    }
+
+    // Update equipped items
+    const equippedWeaponMatch = aiResponse.match(/\*\*Equipped Weapon\*\*: (.+?)(?=\*\*|\n|$)/);
     if (equippedWeaponMatch) {
         const weaponName = equippedWeaponMatch[1].trim();
         updatedEquippedWeapon = weaponName === 'None' ? null : updatedWeapons.find(w => w.name === weaponName) || null;
     }
-
+    const equippedArmorMatch = aiResponse.match(/\*\*Equipped Armor\*\*: (.+?)(?=\*\*|\n|$)/);
     if (equippedArmorMatch) {
         const armorName = equippedArmorMatch[1].trim();
         updatedEquippedArmor = armorName === 'None' ? null : updatedArmor.find(a => a.name === armorName) || null;
     }
-
+    const equippedShieldMatch = aiResponse.match(/\*\*Equipped Shield\*\*: (.+?)(?=\*\*|\n|$)/);
     if (equippedShieldMatch) {
         const shieldName = equippedShieldMatch[1].trim();
         updatedEquippedShield = shieldName === 'None' ? null : updatedShields.find(s => s.name === shieldName) || null;
-    }
-
-    if (abilitiesMatch) {
-        const abilitiesList = abilitiesMatch[1].split('- ').map(item => item.trim()).filter(item => item !== '');
-        const newAbilities = abilitiesList.map(name => abilities.find(ability => ability.name === name)).filter(Boolean) as Ability[];
-
-        updatedAbilities = [...currentAbilities, ...newAbilities].filter((ability, index, self) =>
-            index === self.findIndex((a) => a.name === ability.name)
-        );
-    }
-
-    if (spellsMatch) {
-        const spellsList = spellsMatch[1].split('- ').map(item => item.trim()).filter(item => item !== '');
-        const newSpells = spellsList.map(name => spells.find(spell => spell.name === name)).filter(Boolean) as Spell[];
-
-        updatedSpells = [...currentSpells, ...newSpells].filter((spell, index, self) =>
-            index === self.findIndex((s) => s.name === spell.name)
-        );
     }
 
     console.log("Parsed Inventory:", updatedInventory);
@@ -189,7 +146,6 @@ const parseAIResponse = (
         updatedEquippedShield
     };
 };
-
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'POST') {
         const {
@@ -310,7 +266,7 @@ Give realistic consequences to the player's action, with nuance and complexity.
         try {
             console.log("Sending request to OpenAI...");
             const response = await openai.chat.completions.create({
-                model: "gpt-4",
+                model: "gpt-4o",
                 messages: [
                     { role: "system", content: "You are the DM of a D&D game. Follow the rules and lore provided." },
                     { role: "user", content: completePrompt },

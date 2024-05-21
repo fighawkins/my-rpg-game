@@ -4,8 +4,10 @@ import { Item, items } from '@/data/itemSchema';
 import { Ability, abilities } from '@/data/abilities';
 import { Spell, spells } from '@/data/spells';
 import { classOptions, Class, Stats } from '@/data/classes';
-import { weapons } from '@/data/weapons';
-import { armor as armorItems, shields } from '@/data/armor';
+import { weapons as allWeapons } from '@/data/weapons';
+import { armor as allArmor } from '@/data/armor';
+import { shields as allShields } from '@/data/shields';
+import { speciesOptions, Species } from '@/data/species';
 
 type GameContextType = {
     species: string;
@@ -28,6 +30,8 @@ type GameContextType = {
     mp: number;
     currency: number;
     initializeCharacter: (species: string, characterClass: string) => void;
+    addAbility: (ability: Ability) => void;
+    addSpell: (spell: Spell) => void;
 
     setSpecies: (species: string) => void;
     setCharacterClass: (characterClass: string) => void;
@@ -83,12 +87,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [stats, setStats] = useState<Stats>(defaultStats);
     const [hp, setHp] = useState<number>(20);
     const [mp, setMp] = useState<number>(10);
-    const [currency, setCurrency] = useState<number>(100); // Set initial currency to 100 for testing
+    const [currency, setCurrency] = useState<number>(100); // Set initial currency
 
     const initializeCharacter = (species: string, characterClass: string) => {
+        const selectedSpecies = speciesOptions.find(s => s.name === species);
         const selectedClass = classOptions.find(c => c.name === characterClass);
-        if (!selectedClass) {
-            console.error(`Class ${characterClass} not found`);
+        if (!selectedSpecies || !selectedClass) {
+            console.error(`Species ${species} or Class ${characterClass} not found`);
             return;
         }
 
@@ -102,16 +107,16 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
 
         const startingWeapons = selectedClass.startingWeapons.map(weaponName => {
-            const weapon = weapons.find(weapon => weapon.name === weaponName);
+            const weapon = allWeapons.find(weapon => weapon.name === weaponName);
             if (!weapon) {
                 console.error(`Weapon ${weaponName} not found`);
-                return { name: weaponName, type: 'weapon', description: 'Unknown weapon', weight: 0, equippable: false };
+                return { name: weaponName, type: 'weapon', description: 'Unknown weapon', weight: 0, equippable: false, attributes: { damage: '0' } };
             }
             return weapon;
         });
 
         const startingArmor = selectedClass.startingArmor.map(armorName => {
-            const armorItem = armorItems.find(a => a.name === armorName);
+            const armorItem = allArmor.find(a => a.name === armorName);
             if (!armorItem) {
                 console.error(`Armor ${armorName} not found`);
                 return { name: armorName, type: 'armor', description: 'Unknown armor', weight: 0, equippable: false };
@@ -119,29 +124,36 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
             return armorItem;
         });
 
-        setInventory(startingItems);
+        const startingShields = selectedClass.startingShields.map(shieldName => {
+            const shieldItem = allShields.find(s => s.name === shieldName);
+            if (!shieldItem) {
+                console.error(`Shield ${shieldName} not found`);
+                return { name: shieldName, type: 'shield', description: 'Unknown shield', weight: 0, equippable: false };
+            }
+            return shieldItem;
+        });
+
+        setInventory([...startingItems, ...startingWeapons, ...startingArmor, ...startingShields]);
         setWeapons(startingWeapons);
         setArmor(startingArmor);
-
+        setShields(startingShields);
         setAbilities(selectedClass.abilities);
         setSpells(selectedClass.spells);
-        setStats(prevStats => ({
-            ...prevStats,
-            ...selectedClass.statModifiers,
-        }));
+        setStats({
+            strength: selectedSpecies.baseStats.strength + selectedClass.statModifiers.strength,
+            dexterity: selectedSpecies.baseStats.dexterity + selectedClass.statModifiers.dexterity,
+            constitution: selectedSpecies.baseStats.constitution + selectedClass.statModifiers.constitution,
+            intelligence: selectedSpecies.baseStats.intelligence + selectedClass.statModifiers.intelligence,
+            wisdom: selectedSpecies.baseStats.wisdom + selectedClass.statModifiers.wisdom,
+            charisma: selectedSpecies.baseStats.charisma + selectedClass.statModifiers.charisma,
+        });
         setHp(selectedClass.startingHP);
         setMp(selectedClass.startingMP);
 
         // Equip the first available weapon, armor, and shield if any
         if (startingWeapons.length > 0) setEquippedWeapon(startingWeapons[0]);
         if (startingArmor.length > 0) setEquippedArmor(startingArmor[0]);
-        if (selectedClass.startingItems.includes('Shield')) {
-            const shield = shields.find(s => s.name === 'Shield');
-            if (shield) setEquippedShield(shield);
-        }
-
-        // Set initial currency
-        setCurrency(100); // Set initial currency to 100
+        if (startingShields.length > 0) setEquippedShield(startingShields[0]);
     };
 
     const equipItem = (item: Item) => {
@@ -176,6 +188,14 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const updateAbilitiesAndSpells = (newAbilities: Ability[], newSpells: Spell[]) => {
         setAbilities(newAbilities);
         setSpells(newSpells);
+    };
+
+    const addAbility = (ability: Ability) => {
+        setAbilities(prev => [...prev, ability]);
+    };
+
+    const addSpell = (spell: Spell) => {
+        setSpells(prev => [...prev, spell]);
     };
 
     return (
@@ -223,6 +243,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 unequipItem,
                 updateAbilitiesAndSpells,
                 initializeCharacter,
+                addAbility,
+                addSpell,
             }}
         >
             {children}

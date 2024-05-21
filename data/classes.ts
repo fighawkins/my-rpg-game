@@ -1,8 +1,9 @@
 import { Ability, abilities } from '@/data/abilities';
 import { Item, items } from '@/data/itemSchema';
 import { weapons } from '@/data/weapons';
-import { armor, shields } from '@/data/armor';
+import { armor } from '@/data/armor';
 import { Spell, spells } from './spells';
+import { shields } from '@/data/shields'; // Updated import for shields
 
 export type Stats = {
     strength: number;
@@ -30,6 +31,7 @@ export type Class = {
     startingItems: string[];
     startingWeapons: string[];
     startingArmor: string[];
+    startingShields: string[]; // Updated to plural
 };
 
 export const classOptions: Class[] = [
@@ -66,7 +68,8 @@ export const classOptions: Class[] = [
         },
         startingItems: ['Torch', 'Rope'],
         startingWeapons: ['Sword'],
-        startingArmor: ['Leather Armor', 'Wooden Shield']
+        startingArmor: ['Leather Armor'],
+        startingShields: ['Wooden Shield'] // Updated to plural
     },
     {
         name: 'Healer',
@@ -101,7 +104,8 @@ export const classOptions: Class[] = [
         },
         startingItems: ['Prayer Book', 'Healing Potion'],
         startingWeapons: ['Staff'],
-        startingArmor: ['Robes']
+        startingArmor: ['Robes'],
+        startingShields: [] // Updated to plural
     },
     {
         name: 'Ranger',
@@ -138,6 +142,7 @@ export const classOptions: Class[] = [
         },
         startingItems: ['Torch', 'Rope'],
         startingWeapons: ['Bow & Quiver'],
-        startingArmor: ['Leather Armor']
+        startingArmor: ['Leather Armor'],
+        startingShields: [] // Updated to plural
     },
 ];

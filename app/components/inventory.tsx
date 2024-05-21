@@ -39,8 +39,8 @@ const Inventory: React.FC<InventoryProps> = ({ inventory, weapons, armor, equipp
             <h3 className="text-2xl font-semibold mb-4">Inventory</h3>
             <div className="mb-4">
                 <h4 className="text-xl font-semibold">Equipped</h4>
-                <p><strong>Weapon:</strong> {equippedWeapon ? equippedWeapon.name : 'None'} <button onClick={() => handleUnequip(equippedWeapon?.name || '')}>Unequip</button></p>
-                <p><strong>Armor:</strong> {equippedArmor ? equippedArmor.name : 'None'} <button onClick={() => handleUnequip(equippedArmor?.name || '')}>Unequip</button></p>
+                <p><strong>Weapon:</strong> {equippedWeapon ? equippedWeapon.name : 'None'} </p>
+                <p><strong>Armor:</strong> {equippedArmor ? equippedArmor.name : 'None'} </p>
             </div>
             <div className="mb-4">
                 <h4 className="text-xl font-semibold">Items</h4>

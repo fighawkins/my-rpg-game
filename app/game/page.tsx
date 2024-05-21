@@ -1,12 +1,11 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '@/context/GameContext';
-import Inventory from '../components/inventory';
 import CharacterInfo from '../components/CharacterInfo';
 import GameLog from '../components/GameLog';
 import InputArea from '../components/InputArea';
-
-
+import Inventory from '../components/inventory';
+import { items } from '@/data/items';
 
 const GamePage: React.FC = () => {
     const [input, setInput] = useState<string>('');
@@ -17,6 +16,10 @@ const GamePage: React.FC = () => {
         gender,
         name,
         inventory,
+        weapons,
+        armor,
+        equippedWeapon,
+        equippedArmor,
         abilities,
         spells,
         stats,
@@ -24,6 +27,10 @@ const GamePage: React.FC = () => {
         mp,
         currency,
         setInventory,
+        setWeapons,
+        setArmor,
+        setEquippedWeapon,
+        setEquippedArmor,
         setHp,
         setMp,
         setCurrency,
@@ -48,6 +55,10 @@ const GamePage: React.FC = () => {
                     gender,
                     name,
                     inventory,
+                    weapons,
+                    armor,
+                    equippedWeapon,
+                    equippedArmor,
                     currency,
                     abilities,
                     spells,
@@ -81,16 +92,20 @@ const GamePage: React.FC = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    prompt: `You are a dungeon master. Continue the story based on the following context and player's action. Do not repeat information already provided in previous responses. Respond concisely, and end with "What would you like to do next?". 
-
+                    prompt: `You are a dungeon master. Continue the story based on the following context and player's action. Do not repeat information already provided in previous responses. Respond concisely, and end with "What would you like to do next?".
+        
                     Context: ${messages.map(msg => `${msg.role}: ${msg.content}`).join('\n')}
                     Player's action: ${input}
-                    Species: ${species}, Character Class: ${characterClass}, Gender: ${gender}, Name: ${name}, Inventory: ${inventory.join(', ')}, Currency: ${currency}`,
+                    Species: ${species}, Character Class: ${characterClass}, Gender: ${gender}, Name: ${name}, Inventory: ${inventory.map(item => item.name).join(', ')}, Weapons: ${weapons.map(w => w.name).join(', ')}, Armor: ${armor.map(a => a.name).join(', ')}, Equipped Weapon: ${equippedWeapon ? equippedWeapon.name : 'None'}, Equipped Armor: ${equippedArmor ? equippedArmor.name : 'None'}, Currency: ${currency}`,
                     species,
                     characterClass,
                     gender,
                     name,
                     inventory,
+                    weapons,
+                    armor,
+                    equippedWeapon,
+                    equippedArmor,
                     currency,
                     abilities,
                     spells,
@@ -115,15 +130,13 @@ const GamePage: React.FC = () => {
             const updatedHpMatch = data.response.match(/\*\*HP\*\*: (\d+) HP/m);
             const updatedMpMatch = data.response.match(/\*\*MP\*\*: (\d+) MP/m);
 
-
-            const updatedInventory = updatedInventoryMatch ? updatedInventoryMatch[1].split(', ').filter(item => item !== 'None') : inventory;
+            const newItems = updatedInventoryMatch ? updatedInventoryMatch[1].split(', ').filter(item => item !== '').map(itemName => items.find(item => item.name === itemName) || { name: itemName, description: '' }) : [];
+            const updatedInventory = [...inventory, ...newItems.filter(newItem => !inventory.some(item => item.name === newItem.name))];
             const updatedCurrency = updatedCurrencyMatch ? parseInt(updatedCurrencyMatch[1], 10) : currency;
             const updatedAbilities = updatedAbilitiesMatch ? parseAbilities(updatedAbilitiesMatch[1]) : abilities;
             const updatedSpells = updatedSpellsMatch ? parseSpells(updatedSpellsMatch[1]) : spells;
             const updatedHp = updatedHpMatch ? parseInt(updatedHpMatch[1], 10) : hp;
             const updatedMp = updatedMpMatch ? parseInt(updatedMpMatch[1], 10) : mp;
-
-
 
             setHp(updatedHp);
             setMp(updatedMp);
@@ -142,25 +155,11 @@ const GamePage: React.FC = () => {
         }
     };
 
-    // Helper functions to parse abilities and spells
-    const parseAbilities = (abilitiesString: string) => {
-        return abilitiesString.trim().split(',').map(ability => {
-            const [name, description] = ability.split(':').map(part => part.trim());
-            return { name, description };
-        });
-    };
-
-    const parseSpells = (spellsString: string) => {
-        return spellsString.trim().split(',').map(spell => {
-            const [name, description] = spell.split(':').map(part => part.trim());
-            return { name, description };
-        });
-    };
 
     return (
-        <div className=" min-h-screen flex items-center justify-center p-6 text-gray-800">
+        <div className="min-h-screen flex items-center justify-center p-6 text-gray-800">
             <div className="flex flex-row items-start justify-center max-w-7xl w-full space-x-6 p-6 bg-[#825f2644] rounded-lg shadow-lg">
-                <div className="w-1/4 bg-[#FFFDDD]  p-4 rounded-lg shadow-md">
+                <div className="w-1/4 bg-[#FFFDDD] p-4 rounded-lg shadow-md">
                     <CharacterInfo species={species} characterClass={characterClass} name={name} stats={stats} hp={hp} mp={mp} gender={gender} />
                 </div>
                 <div className="w-2/4 bg-[#FFFDDD] p-4 rounded-lg shadow-md flex flex-col">
@@ -171,7 +170,7 @@ const GamePage: React.FC = () => {
                     <InputArea input={input} setInput={setInput} handleUserInput={handleUserInput} />
                 </div>
                 <div className="w-1/4 bg-[#FFFDDD] p-4 rounded-lg shadow-md">
-                    <Inventory inventory={inventory} currency={currency} abilities={abilities} spells={spells} />
+                    <Inventory inventory={inventory} weapons={weapons} armor={armor} equippedWeapon={equippedWeapon} equippedArmor={equippedArmor} currency={currency} abilities={abilities} spells={spells} />
                 </div>
             </div>
         </div>

@@ -6,7 +6,7 @@ import { classOptions } from '@/data/classes';
 import Link from 'next/link';
 
 export default function CharacterDetails() {
-    const { species, gender, characterClass, name, inventory, currency, abilities, stats, hp, mp, spells, setName, initializeCharacter, setInventory, setCurrency, setAbilities, setSpells } = useGameContext();
+    const { species, gender, characterClass, name, inventory, currency, abilities, stats, hp, mp, spells, equippedWeapon, equippedArmor, setName, initializeCharacter, setInventory, setCurrency, setAbilities, setSpells } = useGameContext();
     const [localName, setLocalName] = useState(name);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +87,7 @@ export default function CharacterDetails() {
     const characterImage = classDetails ? classDetails[gender === 'male' ? 'maleImage' : 'femaleImage'] : '';
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen  p-4 text-black">
+        <div className="flex flex-col items-center justify-center min-h-screen p-4 text-black bg-[#8FBC8F]">
             <div className="bg-[#FFFDDD] rounded-lg shadow-lg p-6 w-full max-w-4xl text-center">
                 <h2 className="text-4xl font-bold mb-4 text-black">Character Details</h2>
                 <div className="mb-4">
@@ -114,7 +114,7 @@ export default function CharacterDetails() {
                             <h3 className="text-2xl font-semibold mb-2 text-black">Inventory</h3>
                             <ul className="list-disc list-inside text-black">
                                 {inventory.map((item, index) => (
-                                    <li key={index}>{item}</li>
+                                    <li key={index}>{item.name}: {item.description}</li>
                                 ))}
                             </ul>
                             <p className="text-black mt-2"><strong>Currency:</strong> {currency} gold</p>
@@ -146,6 +146,13 @@ export default function CharacterDetails() {
                                 <li><strong>Charisma:</strong> {stats.charisma}</li>
                                 <li><strong>HP:</strong> {hp}</li>
                                 <li><strong>MP:</strong> {mp}</li>
+                            </ul>
+                        </div>
+                        <div className="flex-1 min-w-[200px]">
+                            <h3 className="text-2xl font-semibold mb-2 text-black">Equipped</h3>
+                            <ul className="list-none text-black">
+                                <li><strong>Weapon:</strong> {equippedWeapon ? equippedWeapon.name : 'None'}</li>
+                                <li><strong>Armor:</strong> {equippedArmor ? equippedArmor.name : 'None'}</li>
                             </ul>
                         </div>
                     </div>

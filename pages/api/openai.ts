@@ -4,6 +4,9 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import { Ability, Spell } from '@/data/classes';
+import { Item, items } from '@/data/items';
+import { Weapon } from '@/data/weapons';
+import { Armor } from '@/data/armor';
 
 dotenv.config();
 
@@ -20,10 +23,11 @@ const openai = new OpenAI({
 // Load world overview from file
 const worldOverview = fs.readFileSync(path.resolve('world_overview.md'), 'utf-8');
 
-// Parse AI response to get updated inventory, currency, abilities, and spells
 const parseAIResponse = (
     aiResponse: string,
-    currentInventory: string[],
+    currentInventory: Item[],
+    currentWeapons: Weapon[],
+    currentArmor: Armor[],
     currentCurrency: number,
     currentAbilities: Ability[],
     currentSpells: Spell[],
@@ -47,8 +51,10 @@ const parseAIResponse = (
     const mpMatch = aiResponse.match(/\*\*MP\*\*: (\d+)/);
 
     if (inventoryMatch) {
-        const inventoryItems = inventoryMatch[1].split(',').map(item => item.trim());
-        updatedInventory = inventoryItems.includes('None') ? [] : inventoryItems;
+        const inventoryItems = inventoryMatch[1].split(',').map(item => item.trim()).filter(item => item !== '');
+        const newInventoryItems = inventoryItems.map(itemName => items.find(item => item.name === itemName) || { name: itemName, description: '' });
+        // Merge without duplicates
+        updatedInventory = [...currentInventory, ...newInventoryItems.filter(newItem => !currentInventory.some(item => item.name === newItem.name))];
     }
 
     if (currencyMatch) {
@@ -64,11 +70,10 @@ const parseAIResponse = (
     }
 
     if (abilitiesMatch) {
-        const abilitiesList = abilitiesMatch[1].split(';').map(item => item.trim());
+        const abilitiesList = abilitiesMatch[1].split(';').map(item => item.trim()).filter(item => item !== '');
         const newAbilities = abilitiesList.map(ability => {
-            const [name, ...descriptionParts] = ability.split(':');
-            const description = descriptionParts.join(':').trim();
-            return { name: name.trim(), description };
+            const [name, description] = ability.split(':').map(str => str.trim());
+            return { name, description };
         });
 
         updatedAbilities = [...currentAbilities, ...newAbilities].filter((ability, index, self) =>
@@ -76,10 +81,8 @@ const parseAIResponse = (
         );
     }
 
-
-
     if (spellsMatch) {
-        const spellsList = spellsMatch[1].split(';').map(item => item.trim());
+        const spellsList = spellsMatch[1].split(';').map(item => item.trim()).filter(item => item !== '');
         const newSpells = spellsList.map(spell => {
             const [name, description] = spell.split(':').map(str => str.trim());
             return { name, description };
@@ -102,13 +105,13 @@ const parseAIResponse = (
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
-        const { prompt, species, characterClass, gender, name, inventory = [], currency, hp, mp, abilities = [], spells = [], stats } = req.body;
+        const { prompt, species, characterClass, gender, name, inventory = [], weapons = [], armor = [], equippedWeapon, equippedArmor, currency, hp, mp, abilities = [], spells = [], stats } = req.body;
 
         console.log("Request body:", req.body);
 
         if (!prompt || !species || !characterClass || !gender || !name || hp === undefined || mp === undefined || !Array.isArray(inventory) || currency === undefined || !Array.isArray(abilities) || !Array.isArray(spells) || !stats) {
             console.error("Missing required fields in the request body.");
-            return res.status(400).json({ error: "All fields are required: prompt, species, characterClass, gender, name, inventory, currency, abilities, spells, hp, mp, stats" });
+            return res.status(400).json({ error: "All fields are required: prompt, species, characterClass, gender, name, inventory, weapons, armor, equippedWeapon, equippedArmor, currency, abilities, spells, hp, mp, stats" });
         }
 
         let diceRoll;
@@ -132,7 +135,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         - Species: ${species}
         - Class: ${characterClass}
         - Gender: ${gender}
-        - Inventory: ${inventory.join(', ')}
+        - Inventory: ${inventory.map(item => item.name).join(', ')}
         - Abilities: ${abilities.map(ability => `${ability.name}: ${ability.description}`).join(', ')}
         - Spells: ${spells.map(spell => `${spell.name}: ${spell.description}`).join(', ')}
         - Currency: ${currency} gold
@@ -206,7 +209,7 @@ Give realistic consequences to the player's action, with nuance and complexity.
 
             const aiResponse = response.choices[0].message.content;
             console.log("OpenAI response received:", aiResponse);
-            const { updatedInventory, updatedCurrency, updatedAbilities, updatedSpells, updatedHp, updatedMp } = parseAIResponse(aiResponse, inventory, currency, abilities, spells, hp, mp);
+            const { updatedInventory, updatedCurrency, updatedAbilities, updatedSpells, updatedHp, updatedMp } = parseAIResponse(aiResponse, inventory, weapons, armor, currency, abilities, spells, hp, mp);
 
             return res.status(200).json({ response: aiResponse, updatedInventory, updatedCurrency, updatedAbilities, updatedSpells, updatedHp, updatedMp });
         } catch (error) {

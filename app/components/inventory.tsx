@@ -1,55 +1,88 @@
-import { Ability, Spell } from '@/data/classes';
+"use client";
 import React from 'react';
+import { Item } from '@/data/items';
+import { Weapon } from '@/data/weapons';
+import { Armor } from '@/data/armor';
+import { useGameContext } from '@/context/GameContext';
+import { Ability, Spell } from '@/data/classes';
 
 type InventoryProps = {
-    inventory: string[];
+    inventory: Item[];
+    weapons: Weapon[];
+    armor: Armor[];
+    equippedWeapon: Weapon | null;
+    equippedArmor: Armor | null;
     currency: number;
     abilities: Ability[];
     spells: Spell[];
 };
 
-const Inventory: React.FC<InventoryProps> = ({ inventory, currency, abilities, spells }) => {
+const Inventory: React.FC<InventoryProps> = ({ inventory, weapons, armor, equippedWeapon, equippedArmor, currency, abilities, spells }) => {
+    const { equipItem, unequipItem } = useGameContext();
+
+    const handleEquip = (itemName: string) => {
+        equipItem(itemName);
+    };
+
+    const handleUnequip = (itemName: string) => {
+        unequipItem(itemName);
+    };
+
+    console.log("Inventory:", inventory);
+    console.log("Weapons:", weapons);
+    console.log("Armor:", armor);
+    console.log("Equipped Weapon:", equippedWeapon);
+    console.log("Equipped Armor:", equippedArmor);
+
     return (
-        <div className="mx-auto p-6 bg-gray-800 text-white rounded-lg shadow-lg">
-            <h2 className="text-3xl font-bold mb-6 text-center">Inventory</h2>
-
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+            <h3 className="text-2xl font-semibold mb-4">Inventory</h3>
             <div className="mb-4">
-                <h3 className="text-2xl font-semibold mb-2">Items</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <h4 className="text-xl font-semibold">Equipped</h4>
+                <p><strong>Weapon:</strong> {equippedWeapon ? equippedWeapon.name : 'None'} <button onClick={() => handleUnequip(equippedWeapon?.name || '')}>Unequip</button></p>
+                <p><strong>Armor:</strong> {equippedArmor ? equippedArmor.name : 'None'} <button onClick={() => handleUnequip(equippedArmor?.name || '')}>Unequip</button></p>
+            </div>
+            <div className="mb-4">
+                <h4 className="text-xl font-semibold">Items</h4>
+                <ul className="list-disc list-inside">
                     {inventory.map((item, index) => (
-                        <div key={index} className="bg-gray-700 p-2 rounded-md shadow-md">
-                            {item}
-                        </div>
+                        <li key={index}>{item.name}: {item.description}</li>
                     ))}
-                </div>
+                </ul>
             </div>
-
-            <div className="mt-6">
-                <h3 className="text-2xl font-semibold mb-2">Currency</h3>
-                <p className="text-lg">{currency} gold</p>
+            <div className="mb-4">
+                <h4 className="text-xl font-semibold">Weapons</h4>
+                <ul className="list-disc list-inside">
+                    {weapons.map((weapon, index) => (
+                        <li key={index}>{weapon.name}: {weapon.description} <button onClick={() => handleEquip(weapon.name)}>Equip</button></li>
+                    ))}
+                </ul>
             </div>
-
-            <div className="mt-6">
-                <h3 className="text-2xl font-semibold mb-2">Abilities</h3>
-                <div className="grid grid-cols-1 gap-4">
+            <div className="mb-4">
+                <h4 className="text-xl font-semibold">Armor</h4>
+                <ul className="list-disc list-inside">
+                    {armor.map((armorItem, index) => (
+                        <li key={index}>{armorItem.name}: {armorItem.description} <button onClick={() => handleEquip(armorItem.name)}>Equip</button></li>
+                    ))}
+                </ul>
+            </div>
+            <div className="mb-4">
+                <h4 className="text-xl font-semibold">Abilities</h4>
+                <ul className="list-disc list-inside">
                     {abilities.map((ability, index) => (
-                        <div key={index} className="bg-gray-700 p-2 rounded-md shadow-md">
-                            <strong>{ability.name}:</strong> {ability.description}
-                        </div>
+                        <li key={index}><strong>{ability.name}:</strong> {ability.description}</li>
                     ))}
-                </div>
+                </ul>
             </div>
-
-            <div className="mt-6">
-                <h3 className="text-2xl font-semibold mb-2">Spells</h3>
-                <div className="grid grid-cols-1 gap-4">
+            <div className="mb-4">
+                <h4 className="text-xl font-semibold">Spells</h4>
+                <ul className="list-disc list-inside">
                     {spells.map((spell, index) => (
-                        <div key={index} className="bg-gray-700 p-2 rounded-md shadow-md">
-                            <strong>{spell.name}:</strong> {spell.description}
-                        </div>
+                        <li key={index}><strong>{spell.name}:</strong> {spell.description}</li>
                     ))}
-                </div>
+                </ul>
             </div>
+            <p><strong>Currency:</strong> {currency} gold</p>
         </div>
     );
 };

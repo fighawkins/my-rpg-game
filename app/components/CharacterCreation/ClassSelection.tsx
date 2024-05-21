@@ -4,9 +4,12 @@ import Link from 'next/link';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { Class, classOptions } from '@/data/classes';
 import { useGameContext } from '@/context/GameContext';
+import { items } from '@/data/items';
+import { weapons } from '@/data/weapons';
+import { armor } from '@/data/armor';
 
 export default function ClassSelection() {
-    const { species, setCharacterClass, setGender } = useGameContext();
+    const { species, setCharacterClass, setGender, setInventory, setWeapons, setArmor, setEquippedWeapon, setEquippedArmor } = useGameContext();
     const [currentClassIndex, setCurrentClassIndex] = useState(0);
     const [localGender, setLocalGender] = useState<'male' | 'female'>('male');
 
@@ -19,15 +22,29 @@ export default function ClassSelection() {
     };
 
     const handleChoose = () => {
-        setCharacterClass(classOptions[currentClassIndex].name);
+        const chosenClass = classOptions[currentClassIndex];
+        setCharacterClass(chosenClass.name);
         setGender(localGender);
+
+        // Set inventory, weapons, and armor based on the chosen class
+        const classItems = chosenClass.startingItems.map(itemName => items.find(item => item.name === itemName)!).filter(item => item);
+        const classWeapons = chosenClass.startingWeapons.map(weaponName => weapons.find(weapon => weapon.name === weaponName)!).filter(weapon => weapon);
+        const classArmor = chosenClass.startingArmor.map(armorName => armor.find(a => a.name === armorName)!).filter(a => a);
+
+        setInventory(classItems);
+        setWeapons(classWeapons);
+        setArmor(classArmor);
+
+        // Equip the first weapon and armor by default
+        setEquippedWeapon(classWeapons[0] || null);
+        setEquippedArmor(classArmor[0] || null);
     };
 
     const currentClass: Class = classOptions[currentClassIndex];
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen  p-4 text-black">
-            <div className=" bg-[#FFFDDD] rounded-lg shadow-lg p-6 w-full max-w-4xl mb-6 text-center">
+        <div className="flex flex-col items-center justify-center min-h-screen p-4 text-black bg-[#8FBC8F]">
+            <div className="bg-[#FFFDDD] rounded-lg shadow-lg p-6 w-full max-w-4xl mb-6 text-center">
                 <h2 className="text-4xl font-bold mb-4 text-black">Select Your Class</h2>
                 <div className="text-3xl font-semibold mb-4 text-black">{currentClass.name}</div>
                 <div className="relative mx-auto flex items-center justify-center w-full max-w-3xl mb-6">
@@ -62,7 +79,7 @@ export default function ClassSelection() {
                 </div>
             </div>
 
-            <div className=" bg-[#FFFDDD] rounded-lg shadow-lg p-6 w-full max-w-4xl text-center">
+            <div className="bg-[#FFFDDD] rounded-lg shadow-lg p-6 w-full max-w-4xl text-center">
                 <h3 className="text-2xl font-semibold mb-4 text-black">Class Description</h3>
                 <p className="text-lg mb-6 text-black">{currentClass.description}</p>
                 <div className="flex flex-col md:flex-row justify-center items-start space-y-4 md:space-y-0 md:space-x-6">
@@ -87,9 +104,28 @@ export default function ClassSelection() {
                     <div>
                         <h3 className="text-2xl font-semibold mb-2 text-black">Starting Items</h3>
                         <ul className="list-disc list-inside text-lg text-black">
-                            {currentClass.startingItems.map((item, index) => (
-                                <li key={index}>{item}</li>
-                            ))}
+                            {currentClass.startingItems.map((itemName, index) => {
+                                const item = items.find(item => item.name === itemName);
+                                return item ? <li key={index}>{item.name}: {item.description}</li> : null;
+                            })}
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 className="text-2xl font-semibold mb-2 text-black">Starting Weapons</h3>
+                        <ul className="list-disc list-inside text-lg text-black">
+                            {currentClass.startingWeapons.map((weaponName, index) => {
+                                const weapon = weapons.find(weapon => weapon.name === weaponName);
+                                return weapon ? <li key={index}>{weapon.name}: {weapon.description}</li> : null;
+                            })}
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 className="text-2xl font-semibold mb-2 text-black">Starting Armor</h3>
+                        <ul className="list-disc list-inside text-lg text-black">
+                            {currentClass.startingArmor.map((armorName, index) => {
+                                const armorItem = armor.find(a => a.name === armorName);
+                                return armorItem ? <li key={index}>{armorItem.name}: {armorItem.description}</li> : null;
+                            })}
                         </ul>
                     </div>
                 </div>

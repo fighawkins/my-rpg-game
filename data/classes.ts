@@ -1,6 +1,7 @@
-import { Stats } from "./species";
+import { weapons } from './weapons';
+import { armor } from './armor';
+import { items } from './items';
 
-// src/data/classes.ts
 export type Ability = {
     name: string;
     description: string;
@@ -11,9 +12,18 @@ export type Spell = {
     description: string;
 };
 
+export type Stats = {
+    strength: number;
+    dexterity: number;
+    constitution: number;
+    intelligence: number;
+    wisdom: number;
+    charisma: number;
+};
+
 export type Class = {
     name: string;
-    description: string; // Added description property
+    description: string;
     startingHP: number;
     startingMP: number;
     abilities: Ability[];
@@ -26,6 +36,8 @@ export type Class = {
     };
     statModifiers: Stats;
     startingItems: string[];
+    startingWeapons: string[];
+    startingArmor: string[];
 };
 
 export const classOptions: Class[] = [
@@ -60,7 +72,9 @@ export const classOptions: Class[] = [
             wisdom: 0,
             charisma: 0,
         },
-        startingItems: ['Sword', 'Shield', 'Leather Armor'],
+        startingItems: ['Torch', 'Rope'],
+        startingWeapons: ['Sword'],
+        startingArmor: ['Leather Armor'],
     },
     {
         name: 'Healer',
@@ -93,7 +107,9 @@ export const classOptions: Class[] = [
             wisdom: 3,
             charisma: 0,
         },
-        startingItems: ['Prayer Book', 'Healing Herbs', 'Bandages'],
+        startingItems: ['Prayer Book', 'Healing Potion'],
+        startingWeapons: ['Staff'],
+        startingArmor: ['Robes'],
     },
     {
         name: 'Ranger',
@@ -128,6 +144,8 @@ export const classOptions: Class[] = [
             wisdom: 1,
             charisma: 1,
         },
-        startingItems: ['Bow & Quiver', 'Arrows', 'Cloak'],
+        startingItems: ['Torch', 'Rope'],
+        startingWeapons: ['Bow & Quiver'],
+        startingArmor: ['Leather Armor'],
     },
 ];

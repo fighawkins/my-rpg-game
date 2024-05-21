@@ -1,38 +1,54 @@
 "use client";
 import React from 'react';
-import { Item } from '@/data/items';
-import { Weapon } from '@/data/weapons';
-import { Armor } from '@/data/armor';
 import { useGameContext } from '@/context/GameContext';
-import { Ability, Spell } from '@/data/classes';
+import { Ability } from '@/data/abilities';
+import { Spell } from '@/data/spells';
+import { Item } from '@/data/itemSchema';
 
 type InventoryProps = {
     inventory: Item[];
-    weapons: Weapon[];
-    armor: Armor[];
-    equippedWeapon: Weapon | null;
-    equippedArmor: Armor | null;
+    weapons: Item[];
+    armor: Item[];
+    shields: Item[];
+    consumables: Item[];
+    misc: Item[];
+    equippedWeapon: Item | null;
+    equippedArmor: Item | null;
+    equippedShield: Item | null;
     currency: number;
     abilities: Ability[];
     spells: Spell[];
 };
 
-const Inventory: React.FC<InventoryProps> = ({ inventory, weapons, armor, equippedWeapon, equippedArmor, currency, abilities, spells }) => {
+const Inventory: React.FC<InventoryProps> = ({
+    inventory,
+    weapons,
+    armor,
+    shields,
+    consumables,
+    misc,
+    equippedWeapon,
+    equippedArmor,
+    equippedShield,
+    currency,
+    abilities,
+    spells
+}) => {
     const { equipItem, unequipItem } = useGameContext();
 
     const handleEquip = (itemName: string) => {
-        equipItem(itemName);
+        const item = [...inventory, ...weapons, ...armor, ...shields, ...consumables, ...misc].find(i => i.name === itemName);
+        if (item) {
+            equipItem(item);
+        }
     };
 
     const handleUnequip = (itemName: string) => {
-        unequipItem(itemName);
+        const item = [...inventory, ...weapons, ...armor, ...shields, ...consumables, ...misc].find(i => i.name === itemName);
+        if (item) {
+            unequipItem(item);
+        }
     };
-
-    console.log("Inventory:", inventory);
-    console.log("Weapons:", weapons);
-    console.log("Armor:", armor);
-    console.log("Equipped Weapon:", equippedWeapon);
-    console.log("Equipped Armor:", equippedArmor);
 
     return (
         <div className="bg-gray-100 p-4 rounded-lg shadow-md">
@@ -41,6 +57,7 @@ const Inventory: React.FC<InventoryProps> = ({ inventory, weapons, armor, equipp
                 <h4 className="text-xl font-semibold">Equipped</h4>
                 <p><strong>Weapon:</strong> {equippedWeapon ? equippedWeapon.name : 'None'} </p>
                 <p><strong>Armor:</strong> {equippedArmor ? equippedArmor.name : 'None'} </p>
+                <p><strong>Shield:</strong> {equippedShield ? equippedShield.name : 'None'} </p>
             </div>
             <div className="mb-4">
                 <h4 className="text-xl font-semibold">Items</h4>
@@ -63,6 +80,30 @@ const Inventory: React.FC<InventoryProps> = ({ inventory, weapons, armor, equipp
                 <ul className="list-disc list-inside">
                     {armor.map((armorItem, index) => (
                         <li key={index}>{armorItem.name}: {armorItem.description} <button onClick={() => handleEquip(armorItem.name)}>Equip</button></li>
+                    ))}
+                </ul>
+            </div>
+            <div className="mb-4">
+                <h4 className="text-xl font-semibold">Shields</h4>
+                <ul className="list-disc list-inside">
+                    {shields.map((shield, index) => (
+                        <li key={index}>{shield.name}: {shield.description} <button onClick={() => handleEquip(shield.name)}>Equip</button></li>
+                    ))}
+                </ul>
+            </div>
+            <div className="mb-4">
+                <h4 className="text-xl font-semibold">Consumables</h4>
+                <ul className="list-disc list-inside">
+                    {consumables.map((consumable, index) => (
+                        <li key={index}>{consumable.name}: {consumable.description}</li>
+                    ))}
+                </ul>
+            </div>
+            <div className="mb-4">
+                <h4 className="text-xl font-semibold">Miscellaneous</h4>
+                <ul className="list-disc list-inside">
+                    {misc.map((miscItem, index) => (
+                        <li key={index}>{miscItem.name}: {miscItem.description}</li>
                     ))}
                 </ul>
             </div>

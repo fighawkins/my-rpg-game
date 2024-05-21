@@ -1,14 +1,51 @@
-export type Armor = {
-    name: string;
-    description: string;
-    armorClass: number;
-};
+import { Item } from './itemSchema';
 
-export const armor: Armor[] = [
-    { name: 'Leather Armor', description: 'Basic leather armor.', armorClass: 11 },
-    { name: 'Chain Mail', description: 'A sturdy chain mail.', armorClass: 16 },
-    // Add more armor as needed
+export const armor: Item[] = [
+    {
+        name: 'Leather Armor',
+        type: 'armor',
+        description: 'Basic leather armor.',
+        weight: 15,
+        equippable: true,
+        slot: 'body',
+        attributes: {
+            armorClass: 11,
+        },
+    },
+    {
+        name: 'Robes',
+        type: 'armor',
+        description: 'Simple protective clothing.',
+        weight: 5,
+        equippable: true,
+        slot: 'body',
+        attributes: {
+            armorClass: 9,
+        },
+    },
 ];
 
-export const leatherArmor = armor.find(a => a.name === 'Leather Armor');
-export const chainMail = armor.find(a => a.name === 'Chain Mail');
+export const shields: Item[] = [
+    {
+        name: 'Wooden Shield',
+        type: 'shield',
+        description: 'A sturdy wooden shield.',
+        weight: 6,
+        equippable: true,
+        slot: 'off_hand',
+        attributes: {
+            armorBonus: 2,
+        },
+    },
+    {
+        name: 'Iron Shield',
+        type: 'shield',
+        description: 'A strong iron shield.',
+        weight: 10,
+        equippable: true,
+        slot: 'off_hand',
+        attributes: {
+            armorBonus: 3,
+        },
+    },
+];

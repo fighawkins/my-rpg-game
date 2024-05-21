@@ -1,18 +1,36 @@
-export type Item = {
-    name: string;
-    description: string;
-    effect?: string; // Optional field for items with effects
-};
+import { Item } from './itemSchema';
 
 export const items: Item[] = [
-    { name: 'Healing Potion', description: 'Restores 10 HP.', effect: 'heal' },
-    { name: 'Torch', description: 'Provides light in dark areas.' },
-    { name: 'Rope', description: 'A sturdy rope for climbing or tying.' },
-    { name: 'Prayer Book', description: 'A book of prayers for healing and protection.' }, // Added prayer book
-    // Add more items as needed
+    {
+        name: 'Torch',
+        type: 'misc',
+        description: 'Provides light in dark areas.',
+        weight: 1,
+        equippable: false,
+    },
+    {
+        name: 'Rope',
+        type: 'misc',
+        description: 'A sturdy rope for climbing or tying.',
+        weight: 2,
+        equippable: false,
+    },
+    {
+        name: 'Prayer Book',
+        type: 'misc',
+        description: 'A book of prayers and blessings.',
+        weight: 1,
+        equippable: false,
+    },
+    {
+        name: 'Healing Potion',
+        type: 'consumable',
+        description: 'Restores 10 HP.',
+        weight: 0.5,
+        equippable: false,
+        attributes: {
+            effect: 'heal',
+            duration: 0,
+        },
+    },
 ];
-
-export const healingPotion = items.find(item => item.name === 'Healing Potion');
-export const torch = items.find(item => item.name === 'Torch');
-export const rope = items.find(item => item.name === 'Rope');
-export const prayerBook = items.find(item => item.name === 'Prayer Book'); // Export

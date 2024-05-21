@@ -5,7 +5,6 @@ import CharacterInfo from '../components/CharacterInfo';
 import GameLog from '../components/GameLog';
 import InputArea from '../components/InputArea';
 import Inventory from '../components/inventory';
-import { items } from '@/data/items';
 
 const GamePage: React.FC = () => {
     const [input, setInput] = useState<string>('');
@@ -18,8 +17,12 @@ const GamePage: React.FC = () => {
         inventory,
         weapons,
         armor,
+        shields,
+        consumables,
+        misc,
         equippedWeapon,
         equippedArmor,
+        equippedShield,
         abilities,
         spells,
         stats,
@@ -29,8 +32,12 @@ const GamePage: React.FC = () => {
         setInventory,
         setWeapons,
         setArmor,
+        setShields,
+        setConsumables,
+        setMisc,
         setEquippedWeapon,
         setEquippedArmor,
+        setEquippedShield,
         setHp,
         setMp,
         setCurrency,
@@ -57,8 +64,12 @@ const GamePage: React.FC = () => {
                     inventory,
                     weapons,
                     armor,
+                    shields,
+                    consumables,
+                    misc,
                     equippedWeapon,
                     equippedArmor,
+                    equippedShield,
                     currency,
                     abilities,
                     spells,
@@ -96,7 +107,7 @@ const GamePage: React.FC = () => {
         
                     Context: ${messages.map(msg => `${msg.role}: ${msg.content}`).join('\n')}
                     Player's action: ${input}
-                    Species: ${species}, Character Class: ${characterClass}, Gender: ${gender}, Name: ${name}, Inventory: ${inventory.map(item => item.name).join(', ')}, Weapons: ${weapons.map(w => w.name).join(', ')}, Armor: ${armor.map(a => a.name).join(', ')}, Equipped Weapon: ${equippedWeapon ? equippedWeapon.name : 'None'}, Equipped Armor: ${equippedArmor ? equippedArmor.name : 'None'}, Currency: ${currency}`,
+                    Species: ${species}, Character Class: ${characterClass}, Gender: ${gender}, Name: ${name}, Inventory: ${inventory.map(item => item.name).join(', ')}, Weapons: ${weapons.map(w => w.name).join(', ')}, Armor: ${armor.map(a => a.name).join(', ')}, Shields: ${shields.map(s => s.name).join(', ')}, Consumables: ${consumables.map(c => c.name).join(', ')}, Misc: ${misc.map(m => m.name).join(', ')}, Equipped Weapon: ${equippedWeapon ? equippedWeapon.name : 'None'}, Equipped Armor: ${equippedArmor ? equippedArmor.name : 'None'}, Equipped Shield: ${equippedShield ? equippedShield.name : 'None'}, Currency: ${currency}`,
                     species,
                     characterClass,
                     gender,
@@ -104,8 +115,12 @@ const GamePage: React.FC = () => {
                     inventory,
                     weapons,
                     armor,
+                    shields,
+                    consumables,
+                    misc,
                     equippedWeapon,
                     equippedArmor,
+                    equippedShield,
                     currency,
                     abilities,
                     spells,
@@ -123,38 +138,42 @@ const GamePage: React.FC = () => {
             const aiMessage = { role: 'ai', content: data.response };
 
             // Parse the API response for updated status
-            const updatedInventoryMatch = data.response.match(/\*\*Inventory\*\*: (.*?)\s*$/m);
-            const updatedCurrencyMatch = data.response.match(/\*\*Currency\*\*: (\d+) gold/m);
-            const updatedAbilitiesMatch = data.response.match(/\*\*Abilities\*\*: (.*?)\s*$/m);
-            const updatedSpellsMatch = data.response.match(/\*\*Spells\*\*: (.*?)\s*$/m);
-            const updatedHpMatch = data.response.match(/\*\*HP\*\*: (\d+) HP/m);
-            const updatedMpMatch = data.response.match(/\*\*MP\*\*: (\d+) MP/m);
-
-            const newItems = updatedInventoryMatch ? updatedInventoryMatch[1].split(', ').filter(item => item !== '').map(itemName => items.find(item => item.name === itemName) || { name: itemName, description: '' }) : [];
-            const updatedInventory = [...inventory, ...newItems.filter(newItem => !inventory.some(item => item.name === newItem.name))];
-            const updatedCurrency = updatedCurrencyMatch ? parseInt(updatedCurrencyMatch[1], 10) : currency;
-            const updatedAbilities = updatedAbilitiesMatch ? parseAbilities(updatedAbilitiesMatch[1]) : abilities;
-            const updatedSpells = updatedSpellsMatch ? parseSpells(updatedSpellsMatch[1]) : spells;
-            const updatedHp = updatedHpMatch ? parseInt(updatedHpMatch[1], 10) : hp;
-            const updatedMp = updatedMpMatch ? parseInt(updatedMpMatch[1], 10) : mp;
+            const {
+                updatedInventory,
+                updatedWeapons,
+                updatedArmor,
+                updatedShields,
+                updatedConsumables,
+                updatedMisc,
+                updatedCurrency,
+                updatedAbilities,
+                updatedSpells,
+                updatedHp,
+                updatedMp,
+                updatedEquippedWeapon,
+                updatedEquippedArmor,
+                updatedEquippedShield
+            } = data;
 
             setHp(updatedHp);
             setMp(updatedMp);
             setInventory(updatedInventory);
+            setWeapons(updatedWeapons);
+            setArmor(updatedArmor);
+            setShields(updatedShields);
+            setConsumables(updatedConsumables);
+            setMisc(updatedMisc);
             setCurrency(updatedCurrency);
+            setEquippedWeapon(updatedEquippedWeapon);
+            setEquippedArmor(updatedEquippedArmor);
+            setEquippedShield(updatedEquippedShield);
             updateAbilitiesAndSpells(updatedAbilities, updatedSpells);
-
-            // Ensure the response is not cut off and ends with a prompt
-            if (!aiMessage.content.endsWith("What would you like to do next?")) {
-                aiMessage.content += " What would you like to do next?";
-            }
 
             setMessages((prevMessages) => [...prevMessages, aiMessage]);
         } catch (error) {
             console.error('Fetch error:', error);
         }
     };
-
 
     return (
         <div className="min-h-screen flex items-center justify-center p-6 text-gray-800">
@@ -170,7 +189,20 @@ const GamePage: React.FC = () => {
                     <InputArea input={input} setInput={setInput} handleUserInput={handleUserInput} />
                 </div>
                 <div className="w-1/4 bg-[#FFFDDD] p-4 rounded-lg shadow-md">
-                    <Inventory inventory={inventory} weapons={weapons} armor={armor} equippedWeapon={equippedWeapon} equippedArmor={equippedArmor} currency={currency} abilities={abilities} spells={spells} />
+                    <Inventory
+                        inventory={inventory}
+                        weapons={weapons}
+                        armor={armor}
+                        shields={shields}
+                        consumables={consumables}
+                        misc={misc}
+                        equippedWeapon={equippedWeapon}
+                        equippedArmor={equippedArmor}
+                        equippedShield={equippedShield}
+                        currency={currency}
+                        abilities={abilities}
+                        spells={spells}
+                    />
                 </div>
             </div>
         </div>

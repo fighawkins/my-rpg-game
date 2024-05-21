@@ -6,7 +6,7 @@ import { classOptions } from '@/data/classes';
 import Link from 'next/link';
 
 export default function CharacterDetails() {
-    const { species, gender, characterClass, name, inventory, currency, abilities, stats, hp, mp, spells, equippedWeapon, equippedArmor, setName, initializeCharacter, setInventory, setCurrency, setAbilities, setSpells } = useGameContext();
+    const { species, gender, characterClass, name, inventory, currency, abilities, stats, hp, mp, spells, equippedWeapon, equippedArmor, equippedShield, setName, initializeCharacter, setInventory, setCurrency, setAbilities, setSpells } = useGameContext();
     const [localName, setLocalName] = useState(name);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -153,6 +153,7 @@ export default function CharacterDetails() {
                             <ul className="list-none text-black">
                                 <li><strong>Weapon:</strong> {equippedWeapon ? equippedWeapon.name : 'None'}</li>
                                 <li><strong>Armor:</strong> {equippedArmor ? equippedArmor.name : 'None'}</li>
+                                <li><strong>Shield:</strong> {equippedShield ? equippedShield.name : 'None'}</li>
                             </ul>
                         </div>
                     </div>

@@ -1,16 +1,8 @@
-import { weapons } from './weapons';
-import { armor } from './armor';
-import { items } from './items';
-
-export type Ability = {
-    name: string;
-    description: string;
-};
-
-export type Spell = {
-    name: string;
-    description: string;
-};
+import { Ability, abilities } from '@/data/abilities';
+import { Item, items } from '@/data/itemSchema';
+import { weapons } from '@/data/weapons';
+import { armor, shields } from '@/data/armor';
+import { Spell, spells } from './spells';
 
 export type Stats = {
     strength: number;
@@ -47,7 +39,7 @@ export const classOptions: Class[] = [
         startingMP: 10,
         description: 'Warriors are the frontline defenders, known for their strength and bravery. They excel in combat and are equipped to handle the toughest foes with sheer power and resilience.',
         abilities: [
-            { name: 'Extra Attack', description: 'Perform an additional attack.' },
+            abilities.find((ability: { name: string; }) => ability.name === 'Extra Attack')!
         ],
         spells: [],
         species: {
@@ -74,7 +66,7 @@ export const classOptions: Class[] = [
         },
         startingItems: ['Torch', 'Rope'],
         startingWeapons: ['Sword'],
-        startingArmor: ['Leather Armor'],
+        startingArmor: ['Leather Armor', 'Wooden Shield']
     },
     {
         name: 'Healer',
@@ -83,7 +75,7 @@ export const classOptions: Class[] = [
         description: 'Healers are the protectors and caretakers, using their wisdom and knowledge to mend wounds and cure ailments. They are invaluable in keeping their allies in fighting shape through their spells and remedies.',
         abilities: [],
         spells: [
-            { name: 'Prayer', description: 'Heal minor wounds with a prayer.' },
+            spells.find((spell: { name: string; }) => spell.name === 'Prayer')!
         ],
         species: {
             Mouse: {
@@ -109,7 +101,7 @@ export const classOptions: Class[] = [
         },
         startingItems: ['Prayer Book', 'Healing Potion'],
         startingWeapons: ['Staff'],
-        startingArmor: ['Robes'],
+        startingArmor: ['Robes']
     },
     {
         name: 'Ranger',
@@ -117,10 +109,10 @@ export const classOptions: Class[] = [
         startingMP: 12,
         description: 'Rangers are the agile and perceptive scouts, excelling in tracking and surviving in the wilderness. They are skilled with bows and have a deep connection with nature, able to communicate with animals and navigate the wilds with ease.',
         abilities: [
-            { name: 'Tracking', description: 'Track enemies or animals.' },
+            abilities.find((ability: { name: string; }) => ability.name === 'Tracking')!
         ],
         spells: [
-            { name: 'Talk with Animals', description: 'Communicate with animals.' },
+            spells.find((spell: { name: string; }) => spell.name === 'Talk with Animals')!
         ],
         species: {
             Mouse: {
@@ -146,6 +138,6 @@ export const classOptions: Class[] = [
         },
         startingItems: ['Torch', 'Rope'],
         startingWeapons: ['Bow & Quiver'],
-        startingArmor: ['Leather Armor'],
+        startingArmor: ['Leather Armor']
     },
 ];

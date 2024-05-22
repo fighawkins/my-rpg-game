@@ -20,9 +20,25 @@ type GameContextType = {
     shields: Item[];
     consumables: Item[];
     misc: Item[];
-    equippedWeapon: Item | null;
-    equippedArmor: Item | null;
-    equippedShield: Item | null;
+    equippedMainHand: Item | null;
+    equippedOffHand: Item | null;
+    equippedBody: Item | null;
+    equippedHead: Item | null;
+    equippedLegs: Item | null;
+    equippedFeet: Item | null;
+    equippedRing: Item | null;
+    equippedNecklace: Item | null;
+    equippedCloak: Item | null;
+    // Methods to update these
+    setEquippedMainHand: (item: Item | null) => void;
+    setEquippedOffHand: (item: Item | null) => void;
+    setEquippedBody: (item: Item | null) => void;
+    setEquippedHead: (item: Item | null) => void;
+    setEquippedLegs: (item: Item | null) => void;
+    setEquippedFeet: (item: Item | null) => void;
+    setEquippedRing: (item: Item | null) => void;
+    setEquippedNecklace: (item: Item | null) => void;
+    setEquippedCloak: (item: Item | null) => void;
     abilities: Ability[];
     spells: Spell[];
     stats: Stats;
@@ -74,15 +90,23 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [gender, setGender] = useState<'male' | 'female'>('male');
     const [name, setName] = useState<string>('');
     const [inventory, setInventory] = useState<Item[]>([]);
+
+    const [equippedMainHand, setEquippedMainHand] = useState<Item | null>(null);
+    const [equippedOffHand, setEquippedOffHand] = useState<Item | null>(null);
+    const [equippedBody, setEquippedBody] = useState<Item | null>(null);
+    const [equippedHead, setEquippedHead] = useState<Item | null>(null);
+    const [equippedLegs, setEquippedLegs] = useState<Item | null>(null);
+    const [equippedFeet, setEquippedFeet] = useState<Item | null>(null);
+    const [equippedRing, setEquippedRing] = useState<Item | null>(null);
+    const [equippedNecklace, setEquippedNecklace] = useState<Item | null>(null);
+    const [equippedCloak, setEquippedCloak] = useState<Item | null>(null);
+    const [consumables, setConsumables] = useState<Item[]>([]);
+    const [misc, setMisc] = useState<Item[]>([]);
     const [weapons, setWeapons] = useState<Item[]>([]);
     const [armor, setArmor] = useState<Item[]>([]);
     const [shields, setShields] = useState<Item[]>([]);
-    const [consumables, setConsumables] = useState<Item[]>([]);
-    const [misc, setMisc] = useState<Item[]>([]);
-    const [equippedWeapon, setEquippedWeapon] = useState<Item | null>(null);
-    const [equippedArmor, setEquippedArmor] = useState<Item | null>(null);
-    const [equippedShield, setEquippedShield] = useState<Item | null>(null);
     const [abilities, setAbilities] = useState<Ability[]>([]);
+
     const [spells, setSpells] = useState<Spell[]>([]);
     const [stats, setStats] = useState<Stats>(defaultStats);
     const [hp, setHp] = useState<number>(20);
@@ -151,39 +175,132 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setMp(selectedClass.startingMP);
 
         // Equip the first available weapon, armor, and shield if any
-        if (startingWeapons.length > 0) setEquippedWeapon(startingWeapons[0]);
-        if (startingArmor.length > 0) setEquippedArmor(startingArmor[0]);
-        if (startingShields.length > 0) setEquippedShield(startingShields[0]);
+        if (startingWeapons.length > 0) setEquippedMainHand(startingWeapons[0]);
+        if (startingArmor.length > 0) setEquippedBody(startingArmor[0]);
+        if (startingShields.length > 0) setEquippedOffHand(startingShields[0]);
     };
 
+
     const equipItem = (item: Item) => {
-        if (item.type === 'weapon') {
-            if (item.handedness === 'two-handed') {
-                setEquippedWeapon(item);
-                setEquippedShield(null); // Can't equip a shield with a two-handed weapon
+        console.log("Equipping item:", item);
+        if (item.slot) {
+            if (Array.isArray(item.slot)) {
+                item.slot.forEach(slot => {
+                    if (slot === 'main_hand') {
+                        setEquippedMainHand(item);
+                    } else if (slot === 'off_hand') {
+                        setEquippedOffHand(item);
+                    } else if (slot === 'body') {
+                        setEquippedBody(item);
+                    } else if (slot === 'head') {
+                        setEquippedHead(item);
+                    } else if (slot === 'legs') {
+                        setEquippedLegs(item);
+                    } else if (slot === 'feet') {
+                        setEquippedFeet(item);
+                    } else if (slot === 'ring') {
+                        setEquippedRing(item);
+                    } else if (slot === 'necklace') {
+                        setEquippedNecklace(item);
+                    } else if (slot === 'cloak') {
+                        setEquippedCloak(item);
+                    }
+                });
             } else {
-                setEquippedWeapon(item);
-            }
-        } else if (item.type === 'armor') {
-            setEquippedArmor(item);
-        } else if (item.type === 'shield') {
-            if (equippedWeapon && equippedWeapon.handedness === 'two-handed') {
-                console.log('Cannot equip a shield with a two-handed weapon');
-            } else {
-                setEquippedShield(item);
+                if (item.slot === 'main_hand') {
+                    setEquippedMainHand(item);
+                } else if (item.slot === 'off_hand') {
+                    setEquippedOffHand(item);
+                } else if (item.slot === 'body') {
+                    setEquippedBody(item);
+                } else if (item.slot === 'head') {
+                    setEquippedHead(item);
+                } else if (item.slot === 'legs') {
+                    setEquippedLegs(item);
+                } else if (item.slot === 'feet') {
+                    setEquippedFeet(item);
+                } else if (item.slot === 'ring') {
+                    setEquippedRing(item);
+                } else if (item.slot === 'necklace') {
+                    setEquippedNecklace(item);
+                } else if (item.slot === 'cloak') {
+                    setEquippedCloak(item);
+                }
             }
         }
+        console.log("Current equipped state:", {
+            equippedMainHand,
+            equippedOffHand,
+            equippedBody,
+            equippedHead,
+            equippedLegs,
+            equippedFeet,
+            equippedRing,
+            equippedNecklace,
+            equippedCloak,
+        });
     };
 
     const unequipItem = (item: Item) => {
-        if (item.type === 'weapon' && equippedWeapon === item) {
-            setEquippedWeapon(null);
-        } else if (item.type === 'armor' && equippedArmor === item) {
-            setEquippedArmor(null);
-        } else if (item.type === 'shield' && equippedShield === item) {
-            setEquippedShield(null);
+        console.log("Unequipping item:", item);
+        if (item.slot) {
+            if (Array.isArray(item.slot)) {
+                item.slot.forEach(slot => {
+                    if (slot === 'main_hand' && equippedMainHand === item) {
+                        setEquippedMainHand(null);
+                    } else if (slot === 'off_hand' && equippedOffHand === item) {
+                        setEquippedOffHand(null);
+                    } else if (slot === 'body' && equippedBody === item) {
+                        setEquippedBody(null);
+                    } else if (slot === 'head' && equippedHead === item) {
+                        setEquippedHead(null);
+                    } else if (slot === 'legs' && equippedLegs === item) {
+                        setEquippedLegs(null);
+                    } else if (slot === 'feet' && equippedFeet === item) {
+                        setEquippedFeet(null);
+                    } else if (slot === 'ring' && equippedRing === item) {
+                        setEquippedRing(null);
+                    } else if (slot === 'necklace' && equippedNecklace === item) {
+                        setEquippedNecklace(null);
+                    } else if (slot === 'cloak' && equippedCloak === item) {
+                        setEquippedCloak(null);
+                    }
+                });
+            } else {
+                if (item.slot === 'main_hand' && equippedMainHand === item) {
+                    setEquippedMainHand(null);
+                } else if (item.slot === 'off_hand' && equippedOffHand === item) {
+                    setEquippedOffHand(null);
+                } else if (item.slot === 'body' && equippedBody === item) {
+                    setEquippedBody(null);
+                } else if (item.slot === 'head' && equippedHead === item) {
+                    setEquippedHead(null);
+                } else if (item.slot === 'legs' && equippedLegs === item) {
+                    setEquippedLegs(null);
+                } else if (item.slot === 'feet' && equippedFeet === item) {
+                    setEquippedFeet(null);
+                } else if (item.slot === 'ring' && equippedRing === item) {
+                    setEquippedRing(null);
+                } else if (item.slot === 'necklace' && equippedNecklace === item) {
+                    setEquippedNecklace(null);
+                } else if (item.slot === 'cloak' && equippedCloak === item) {
+                    setEquippedCloak(null);
+                }
+            }
         }
+        console.log("Current equipped state:", {
+            equippedMainHand,
+            equippedOffHand,
+            equippedBody,
+            equippedHead,
+            equippedLegs,
+            equippedFeet,
+            equippedRing,
+            equippedNecklace,
+            equippedCloak,
+        });
     };
+
 
     const updateAbilitiesAndSpells = (newAbilities: Ability[], newSpells: Spell[]) => {
         setAbilities(newAbilities);
@@ -209,11 +326,29 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 weapons,
                 armor,
                 shields,
+                setWeapons,
+                setArmor,
+                setShields,
                 consumables,
                 misc,
-                equippedWeapon,
-                equippedArmor,
-                equippedShield,
+                equippedMainHand,
+                setEquippedMainHand,
+                equippedOffHand,
+                setEquippedOffHand,
+                equippedBody,
+                setEquippedBody,
+                equippedHead,
+                setEquippedHead,
+                equippedLegs,
+                setEquippedLegs,
+                equippedFeet,
+                setEquippedFeet,
+                equippedRing,
+                setEquippedRing,
+                equippedNecklace,
+                setEquippedNecklace,
+                equippedCloak,
+                setEquippedCloak,
                 abilities,
                 spells,
                 stats,
@@ -225,14 +360,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setGender,
                 setName,
                 setInventory,
-                setWeapons,
-                setArmor,
-                setShields,
                 setConsumables,
                 setMisc,
-                setEquippedWeapon,
-                setEquippedArmor,
-                setEquippedShield,
                 setAbilities,
                 setSpells,
                 setStats,
@@ -247,6 +376,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 addSpell,
             }}
         >
+
             {children}
         </GameContext.Provider>
     );

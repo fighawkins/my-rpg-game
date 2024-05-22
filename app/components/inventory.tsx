@@ -1,55 +1,87 @@
 import React from 'react';
+import { Item, Ability, Spell } from '@/data/itemSchema';
 
-const InventorySection = ({ title, items }) => (
-    <div className="mb-4">
-        <h3 className="text-xl font-bold mb-2 text-center">{title}</h3>
-        {items.length > 0 ? (
-            items.map((item, index) => (
-                <p key={index} className="text-sm">{item.name}: {item.description}</p>
-            ))
-        ) : (
-            <p className="text-sm">None</p>
-        )}
-    </div>
-);
+type InventoryProps = {
+    inventory: Item[];
+    weapons: Item[];
+    armor: Item[];
+    shields: Item[];
+    consumables: Item[];
+    misc: Item[];
+    equippedMainHand: Item | null;
+    equippedOffHand: Item | null;
+    equippedBody: Item | null;
+    equippedHead: Item | null;
+    equippedLegs: Item | null;
+    equippedFeet: Item | null;
+    equippedRing: Item | null;
+    equippedNecklace: Item | null;
+    equippedCloak: Item | null;
+    currency: number;
+    abilities: Ability[];
+    spells: Spell[];
+};
 
-const Inventory = ({
-    inventory = [],
-    weapons = [],
-    armor = [],
-    shields = [],
-    consumables = [],
-    misc = [],
-    equippedWeapon = null,
-    equippedArmor = null,
-    equippedShield = null,
-    currency = 0,
-    abilities = [],
-    spells = [],
-}) => (
-    <div className="max-w-md mx-auto p-6 bg-gray-800 text-white rounded-lg shadow-lg">
-        <div className="mb-6">
+const Inventory: React.FC<InventoryProps> = ({
+    inventory,
+    weapons,
+    armor,
+    shields,
+    consumables,
+    misc,
+    equippedMainHand,
+    equippedOffHand,
+    equippedBody,
+    equippedHead,
+    equippedLegs,
+    equippedFeet,
+    equippedRing,
+    equippedNecklace,
+    equippedCloak,
+    currency,
+    abilities,
+    spells,
+}) => {
+    return (
+        <div className="max-w-md mx-auto p-6 bg-gray-800 text-white rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4 text-center">Inventory</h2>
-            <div className="grid grid-cols-1 gap-4">
-                <div className="mb-4">
-                    <h3 className="text-xl font-bold mb-2 text-center">Equipped</h3>
-                    <p>Weapon: {equippedWeapon ? equippedWeapon.name : 'None'}</p>
-                    <p>Armor: {equippedArmor ? equippedArmor.name : 'None'}</p>
-                    <p>Shield: {equippedShield ? equippedShield.name : 'None'}</p>
-                </div>
-                <InventorySection title="Items" items={inventory} />
+            <div className="mt-6">
+                <h3 className="text-xl font-semibold mb-2 text-center">Equipped</h3>
+                <ul className="grid grid-cols-2 gap-4 mb-4">
+                    <li className=" p-2 rounded"><strong>Main Hand:</strong> {equippedMainHand ? equippedMainHand.name : 'None'}</li>
+                    <li className=" p-2 rounded"><strong>Off Hand:</strong> {equippedOffHand ? equippedOffHand.name : 'None'}</li>
+                    <li className=" p-2 rounded"><strong>Body:</strong> {equippedBody ? equippedBody.name : 'None'}</li>
+                    <li className="p-2 rounded"><strong>Head:</strong> {equippedHead ? equippedHead.name : 'None'}</li>
+                    <li className=" p-2 rounded"><strong>Legs:</strong> {equippedLegs ? equippedLegs.name : 'None'}</li>
+                    <li className=" p-2 rounded"><strong>Feet:</strong> {equippedFeet ? equippedFeet.name : 'None'}</li>
+                    <li className=" p-2 rounded"><strong>Ring:</strong> {equippedRing ? equippedRing.name : 'None'}</li>
+                    <li className=" p-2 rounded"><strong>Necklace:</strong> {equippedNecklace ? equippedNecklace.name : 'None'}</li>
+                    <li className=" p-2 rounded"><strong>Cloak:</strong> {equippedCloak ? equippedCloak.name : 'None'}</li>
+                </ul>
+            </div>
 
-                <InventorySection title="Consumables" items={consumables} />
-                <InventorySection title="Miscellaneous" items={misc} />
-                <div className="mb-4">
-                    <h3 className="text-xl font-bold mb-2 text-center">Currency</h3>
-                    <p>{currency} gold</p>
-                </div>
-                <InventorySection title="Abilities" items={abilities} />
-                <InventorySection title="Spells" items={spells} />
+            <div className="mt-4">
+                <h3 className="text-xl font-semibold mb-2 text-center">Consumables</h3>
+                <ul className="mb-4">{consumables.map((item, index) => <li key={index} className=" p-2 rounded mb-2">{item.name}</li>)}</ul>
+            </div>
+            <div className="mt-4">
+                <h3 className="text-xl font-semibold mb-2 text-center">Miscellaneous</h3>
+                <ul className="mb-4">{misc.map((item, index) => <li key={index} className=" p-2 rounded mb-2">{item.name}</li>)}</ul>
+            </div>
+            <div className="mt-4">
+                <h3 className="text-xl font-semibold mb-2 text-center">Currency</h3>
+                <p className=" p-2 rounded mb-4 text-center">{currency} gold</p>
+            </div>
+            <div className="mt-4">
+                <h3 className="text-xl font-semibold mb-2 text-center">Abilities</h3>
+                <ul className="mb-4">{abilities.map((ability, index) => <li key={index} className=" p-2 rounded mb-2">{ability.name}</li>)}</ul>
+            </div>
+            <div className="mt-4">
+                <h3 className="text-xl font-semibold mb-2 text-center">Spells</h3>
+                <ul className="mb-4">{spells.map((spell, index) => <li key={index} className=" p-2 rounded mb-2">{spell.name}</li>)}</ul>
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 export default Inventory;

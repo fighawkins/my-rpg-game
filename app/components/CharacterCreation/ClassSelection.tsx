@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { classOptions } from '@/data/classes';
 import { useGameContext } from '@/context/GameContext';
-import { items, } from '@/data/itemSchema'; // Updated import
+import { items } from '@/data/itemSchema'; // Updated import
 import { shields } from '@/data/shields';
 
 const ClassSelection = () => {
@@ -24,7 +24,8 @@ const ClassSelection = () => {
     };
 
     const selectedClass = classOptions[selectedClassIndex];
-    const characterImage = selectedClass.species[species as keyof typeof selectedClass.species][gender === 'male' ? 'maleImage' : 'femaleImage'];
+    const speciesData = selectedClass?.species[species as keyof typeof selectedClass.species];
+    const characterImage = speciesData ? (gender === 'male' ? speciesData.maleImage : speciesData.femaleImage) : '';
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-4 text-black bg-[#8FBC8F]">
@@ -36,12 +37,14 @@ const ClassSelection = () => {
                         onClick={() => handleClassChange(selectedClassIndex - 1)}
                         className="absolute left-0 top-1/2 transform -translate-y-1/2 text-4xl cursor-pointer text-gray-700 hover:text-gray-900 transition-colors"
                     />
-                    <img
-                        src={characterImage}
-                        alt={selectedClass.name}
-                        className="w-full h-auto max-w-[400px] object-cover rounded-lg shadow-lg transition-transform duration-500 ease-in-out mx-4"
-                        key={selectedClassIndex}
-                    />
+                    {characterImage && (
+                        <img
+                            src={characterImage}
+                            alt={selectedClass.name}
+                            className="w-full h-auto max-w-[400px] object-cover rounded-lg shadow-lg transition-transform duration-500 ease-in-out mx-4"
+                            key={selectedClassIndex}
+                        />
+                    )}
                     <FaArrowRight
                         onClick={() => handleClassChange(selectedClassIndex + 1)}
                         className="absolute right-0 top-1/2 transform -translate-y-1/2 text-4xl cursor-pointer text-gray-700 hover:text-gray-900 transition-colors"
@@ -89,7 +92,7 @@ const ClassSelection = () => {
                         <h3 className="text-2xl font-semibold mb-2 text-black">Starting Items</h3>
                         <ul className="list-disc list-inside text-lg text-black">
                             {selectedClass.startingItems.map((itemName, index) => {
-                                const item = items.find(item => item.name === itemName);
+                                const item = items.find((item: { name: string; }) => item.name === itemName);
                                 return item ? <li key={index}>{item.name}: {item.description}</li> : null;
                             })}
                         </ul>

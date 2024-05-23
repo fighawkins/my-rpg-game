@@ -1,5 +1,7 @@
 import React from 'react';
-import { Item, Ability, Spell } from '@/data/itemSchema';
+import { Item } from '@/data/itemSchema';
+import { Spell } from '@/data/spells';
+import { Ability } from '@/data/abilities';
 
 type InventoryProps = {
     inventory: Item[];
@@ -48,37 +50,37 @@ const Inventory: React.FC<InventoryProps> = ({
             <div className="mt-6">
                 <h3 className="text-xl font-semibold mb-2 text-center">Equipped</h3>
                 <ul className="grid grid-cols-2 gap-4 mb-4">
-                    <li className=" p-2 rounded"><strong>Main Hand:</strong> {equippedMainHand ? equippedMainHand.name : 'None'}</li>
-                    <li className=" p-2 rounded"><strong>Off Hand:</strong> {equippedOffHand ? equippedOffHand.name : 'None'}</li>
-                    <li className=" p-2 rounded"><strong>Body:</strong> {equippedBody ? equippedBody.name : 'None'}</li>
-                    <li className="p-2 rounded"><strong>Head:</strong> {equippedHead ? equippedHead.name : 'None'}</li>
-                    <li className=" p-2 rounded"><strong>Legs:</strong> {equippedLegs ? equippedLegs.name : 'None'}</li>
-                    <li className=" p-2 rounded"><strong>Feet:</strong> {equippedFeet ? equippedFeet.name : 'None'}</li>
-                    <li className=" p-2 rounded"><strong>Ring:</strong> {equippedRing ? equippedRing.name : 'None'}</li>
-                    <li className=" p-2 rounded"><strong>Necklace:</strong> {equippedNecklace ? equippedNecklace.name : 'None'}</li>
-                    <li className=" p-2 rounded"><strong>Cloak:</strong> {equippedCloak ? equippedCloak.name : 'None'}</li>
+                    <li><strong>Main Hand:</strong> {equippedMainHand ? equippedMainHand.name : 'None'}</li>
+                    <li><strong>Off Hand:</strong> {equippedOffHand ? equippedOffHand.name : 'None'}</li>
+                    <li><strong>Body:</strong> {equippedBody ? equippedBody.name : 'None'}</li>
+                    <li><strong>Head:</strong> {equippedHead ? equippedHead.name : 'None'}</li>
+                    <li><strong>Legs:</strong> {equippedLegs ? equippedLegs.name : 'None'}</li>
+                    <li><strong>Feet:</strong> {equippedFeet ? equippedFeet.name : 'None'}</li>
+                    <li><strong>Ring:</strong> {equippedRing ? equippedRing.name : 'None'}</li>
+                    <li><strong>Necklace:</strong> {equippedNecklace ? equippedNecklace.name : 'None'}</li>
+                    <li><strong>Cloak:</strong> {equippedCloak ? equippedCloak.name : 'None'}</li>
                 </ul>
             </div>
 
             <div className="mt-4">
                 <h3 className="text-xl font-semibold mb-2 text-center">Consumables</h3>
-                <ul className="mb-4">{consumables.map((item, index) => <li key={index} className=" p-2 rounded mb-2">{item.name}</li>)}</ul>
+                <ul className="mb-4">{consumables.map((item, index) => <li key={index}>{item.name}</li>)}</ul>
             </div>
             <div className="mt-4">
                 <h3 className="text-xl font-semibold mb-2 text-center">Miscellaneous</h3>
-                <ul className="mb-4">{misc.map((item, index) => <li key={index} className=" p-2 rounded mb-2">{item.name}</li>)}</ul>
+                <ul className="mb-4">{misc.map((item, index) => <li key={index}>{item.name}</li>)}</ul>
             </div>
             <div className="mt-4">
                 <h3 className="text-xl font-semibold mb-2 text-center">Currency</h3>
-                <p className=" p-2 rounded mb-4 text-center">{currency} gold</p>
+                <p className="mb-4 text-center">{currency} gold</p>
             </div>
             <div className="mt-4">
                 <h3 className="text-xl font-semibold mb-2 text-center">Abilities</h3>
-                <ul className="mb-4">{abilities.map((ability, index) => <li key={index} className=" p-2 rounded mb-2">{ability.name}</li>)}</ul>
+                <ul className="mb-4">{abilities.map((ability, index) => <li key={index}>{ability.name}</li>)}</ul>
             </div>
             <div className="mt-4">
                 <h3 className="text-xl font-semibold mb-2 text-center">Spells</h3>
-                <ul className="mb-4">{spells.map((spell, index) => <li key={index} className=" p-2 rounded mb-2">{spell.name}</li>)}</ul>
+                <ul className="mb-4">{spells.map((spell, index) => <li key={index}>{spell.name}</li>)}</ul>
             </div>
         </div>
     );

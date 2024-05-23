@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { classOptions } from '@/data/classes';
 import { useGameContext } from '@/context/GameContext';
-import { items } from '@/data/itemSchema'; // Updated import
+import { items } from '@/data/itemSchema'; // Correct import for items
 import { shields } from '@/data/shields';
 
 const ClassSelection = () => {
@@ -91,36 +91,36 @@ const ClassSelection = () => {
                     <div>
                         <h3 className="text-2xl font-semibold mb-2 text-black">Starting Items</h3>
                         <ul className="list-disc list-inside text-lg text-black">
-                            {selectedClass.startingItems.map((itemName, index) => {
-                                const item = items.find((item: { name: string; }) => item.name === itemName);
-                                return item ? <li key={index}>{item.name}: {item.description}</li> : null;
+                            {selectedClass.startingItems && selectedClass.startingItems.map((itemName, index) => {
+                                const item = items?.find((item: { name: string; }) => item.name === itemName);
+                                return item ? <li key={index}>{item.name}: {item.description}</li> : <li key={index}>{itemName}: Description not found</li>;
                             })}
                         </ul>
                     </div>
                     <div>
                         <h3 className="text-2xl font-semibold mb-2 text-black">Starting Weapons</h3>
                         <ul className="list-disc list-inside text-lg text-black">
-                            {selectedClass.startingWeapons.map((weaponName, index) => {
-                                const weapon = items.find(item => item.name === weaponName && item.type === 'weapon');
-                                return weapon ? <li key={index}>{weapon.name}: {weapon.description}</li> : null;
+                            {selectedClass.startingWeapons && selectedClass.startingWeapons.map((weaponName, index) => {
+                                const weapon = items?.find(item => item.name === weaponName && item.type === 'weapon');
+                                return weapon ? <li key={index}>{weapon.name}: {weapon.description}</li> : <li key={index}>{weaponName}: Description not found</li>;
                             })}
                         </ul>
                     </div>
                     <div>
                         <h3 className="text-2xl font-semibold mb-2 text-black">Starting Armor</h3>
                         <ul className="list-disc list-inside text-lg text-black">
-                            {selectedClass.startingArmor.map((armorName, index) => {
-                                const armor = items.find(item => item.name === armorName && item.type === 'armor');
-                                return armor ? <li key={index}>{armor.name}: {armor.description}</li> : null;
+                            {selectedClass.startingArmor && selectedClass.startingArmor.map((armorName, index) => {
+                                const armor = items?.find(item => item.name === armorName && item.type === 'armor');
+                                return armor ? <li key={index}>{armor.name}: {armor.description}</li> : <li key={index}>{armorName}: Description not found</li>;
                             })}
                         </ul>
                     </div>
                     <div>
                         <h3 className="text-2xl font-semibold mb-2 text-black">Starting Shields</h3>
                         <ul className="list-disc list-inside text-lg text-black">
-                            {selectedClass.startingShields.map((shieldName, index) => {
-                                const shield = shields.find((item: { name: string; }) => item.name === shieldName);
-                                return shield ? <li key={index}>{shield.name}: {shield.description}</li> : null;
+                            {selectedClass.startingShields && selectedClass.startingShields.map((shieldName, index) => {
+                                const shield = shields?.find((item: { name: string; }) => item.name === shieldName);
+                                return shield ? <li key={index}>{shield.name}: {shield.description}</li> : <li key={index}>{shieldName}: Description not found</li>;
                             })}
                         </ul>
                     </div>

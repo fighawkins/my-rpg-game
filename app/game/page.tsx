@@ -7,6 +7,7 @@ import InputArea from '../components/InputArea';
 import AudioPlayer from '../components/AudioPlayer';
 import Inventory from '../components/inventory';
 import SpeakerToggle from '../components/speakertoggle';
+import { parseAIResponse } from '../Utils/parseAIResponse';
 
 const GamePage: React.FC = () => {
     const [input, setInput] = useState<string>('');
@@ -128,6 +129,71 @@ const GamePage: React.FC = () => {
             const data = await response.json();
             const initialScene = data.response;
             setMessages([{ role: 'ai', content: initialScene }]);
+
+            const {
+                updatedInventory,
+                updatedWeapons,
+                updatedArmor,
+                updatedShields,
+                updatedConsumables,
+                updatedMisc,
+                updatedCurrency,
+                updatedAbilities,
+                updatedSpells,
+                updatedHp,
+                updatedMp,
+                updatedEquippedMainHand,
+                updatedEquippedOffHand,
+                updatedEquippedBody,
+                updatedEquippedHead,
+                updatedEquippedLegs,
+                updatedEquippedFeet,
+                updatedEquippedRing,
+                updatedEquippedNecklace,
+                updatedEquippedCloak
+            } = parseAIResponse(
+                initialScene,
+                inventory,
+                weapons,
+                armor,
+                shields,
+                consumables,
+                misc,
+                currency,
+                abilities,
+                spells,
+                hp,
+                mp,
+                equippedMainHand,
+                equippedOffHand,
+                equippedBody,
+                equippedHead,
+                equippedLegs,
+                equippedFeet,
+                equippedRing,
+                equippedNecklace,
+                equippedCloak
+            );
+
+            setHp(updatedHp);
+            setMp(updatedMp);
+            setInventory(updatedInventory);
+            setWeapons(updatedWeapons);
+            setArmor(updatedArmor);
+            setShields(updatedShields);
+            setConsumables(updatedConsumables);
+            setMisc(updatedMisc);
+            setCurrency(updatedCurrency);
+            setEquippedMainHand(updatedEquippedMainHand);
+            setEquippedOffHand(updatedEquippedOffHand);
+            setEquippedBody(updatedEquippedBody);
+            setEquippedHead(updatedEquippedHead);
+            setEquippedLegs(updatedEquippedLegs);
+            setEquippedFeet(updatedEquippedFeet);
+            setEquippedRing(updatedEquippedRing);
+            setEquippedNecklace(updatedEquippedNecklace);
+            setEquippedCloak(updatedEquippedCloak);
+
         } catch (error) {
             console.error('Fetch error:', error);
         }
@@ -142,7 +208,7 @@ const GamePage: React.FC = () => {
             const contextMessages = messages.map(msg => `${msg.role}: ${msg.content}`).join('\n');
             const payload = {
                 prompt: `You are a dungeon master. Continue the story based on the following context and player's action. Do not repeat information already provided in previous responses. Respond concisely, and end with "What would you like to do next?".
-            
+                
                         Context: ${contextMessages}
                         Player's action: ${input}
                         Species: ${species}, Character Class: ${characterClass}, Gender: ${gender}, Name: ${name}, 
@@ -202,7 +268,6 @@ const GamePage: React.FC = () => {
             const data = await response.json();
             const aiMessage = { role: 'ai', content: data.response };
 
-            // Parse the API response for updated status
             const {
                 updatedInventory,
                 updatedWeapons,
@@ -224,7 +289,29 @@ const GamePage: React.FC = () => {
                 updatedEquippedRing,
                 updatedEquippedNecklace,
                 updatedEquippedCloak
-            } = data;
+            } = parseAIResponse(
+                aiMessage.content,
+                inventory,
+                weapons,
+                armor,
+                shields,
+                consumables,
+                misc,
+                currency,
+                abilities,
+                spells,
+                hp,
+                mp,
+                equippedMainHand,
+                equippedOffHand,
+                equippedBody,
+                equippedHead,
+                equippedLegs,
+                equippedFeet,
+                equippedRing,
+                equippedNecklace,
+                equippedCloak
+            );
 
             setHp(updatedHp);
             setMp(updatedMp);
@@ -255,6 +342,7 @@ const GamePage: React.FC = () => {
     const togglePlay = () => {
         setIsPlaying(!isPlaying);
     };
+
     return (
         <div className="min-h-screen flex items-center justify-center p-6 text-gray-800">
             <div className="flex flex-row items-start justify-center max-w-7xl w-full space-x-6 p-6 bg-[#825f2644] rounded-lg shadow-lg">

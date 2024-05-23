@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "compromise": "^14.13.0",
     "dotenv": "^16.4.5",
     "next": "14.2.3",
     "openai": "^4.47.1",

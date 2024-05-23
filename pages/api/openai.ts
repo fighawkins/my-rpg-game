@@ -3,9 +3,11 @@ import OpenAI from 'openai';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
-import { Item, items, classifyItem } from '@/data/itemSchema';
+import nlp from 'compromise';
+import { Item, classifyItem } from '@/data/itemSchema';
 import { Ability, abilities } from '@/data/abilities';
 import { Spell, spells } from '@/data/spells';
+import { parseAIResponse } from '@/app/Utils/parseAIResponse';
 
 dotenv.config();
 
@@ -20,186 +22,6 @@ const openai = new OpenAI({
 });
 
 const worldOverview = fs.readFileSync(path.resolve('world_overview.md'), 'utf-8');
-const parseAIResponse = (
-    aiResponse: string,
-    currentInventory: Item[],
-    currentWeapons: Item[],
-    currentArmor: Item[],
-    currentShields: Item[],
-    currentConsumables: Item[],
-    currentMisc: Item[],
-    currentCurrency: number,
-    currentAbilities: Ability[],
-    currentSpells: Spell[],
-    currentHp: number,
-    currentMp: number,
-    currentEquippedMainHand: Item | null,
-    currentEquippedOffHand: Item | null,
-    currentEquippedBody: Item | null,
-    currentEquippedHead: Item | null,
-    currentEquippedLegs: Item | null,
-    currentEquippedFeet: Item | null,
-    currentEquippedRing: Item | null,
-    currentEquippedNecklace: Item | null,
-    currentEquippedCloak: Item | null
-) => {
-    console.log("AI Response:", aiResponse);
-
-    let updatedInventory = [...currentInventory];
-    let updatedWeapons = [...currentWeapons];
-    let updatedArmor = [...currentArmor];
-    let updatedShields = [...currentShields];
-    let updatedConsumables = [...currentConsumables];
-    let updatedMisc = [...currentMisc];
-    let updatedCurrency = currentCurrency;
-    let updatedAbilities = [...currentAbilities];
-    let updatedSpells = [...currentSpells];
-    let updatedHp = currentHp;
-    let updatedMp = currentMp;
-    let updatedEquippedMainHand = currentEquippedMainHand;
-    let updatedEquippedOffHand = currentEquippedOffHand;
-    let updatedEquippedBody = currentEquippedBody;
-    let updatedEquippedHead = currentEquippedHead;
-    let updatedEquippedLegs = currentEquippedLegs;
-    let updatedEquippedFeet = currentEquippedFeet;
-    let updatedEquippedRing = currentEquippedRing;
-    let updatedEquippedNecklace = currentEquippedNecklace;
-    let updatedEquippedCloak = currentEquippedCloak;
-
-    // Update inventory
-    const inventoryMatch = aiResponse.match(/\*\*Inventory\*\*: (.+?)(?=\*\*|\n|$)/);
-    if (inventoryMatch) {
-        const inventoryItems = inventoryMatch[1].split(',').map(item => item.trim());
-        updatedInventory = inventoryItems.map(itemName => items.find(item => item.name === itemName) || { name: itemName, type: 'misc', description: 'Unknown item', weight: 0, equippable: false });
-        updatedWeapons = updatedInventory.filter(item => item.type === 'weapon');
-        updatedArmor = updatedInventory.filter(item => item.type === 'armor');
-        updatedShields = updatedInventory.filter(item => item.type === 'shield');
-        updatedConsumables = updatedInventory.filter(item => item.type === 'consumable');
-        updatedMisc = updatedInventory.filter(item => item.type === 'misc');
-    }
-
-    // Update currency
-    const currencyMatch = aiResponse.match(/\*\*Currency\*\*: (\d+) gold/);
-    if (currencyMatch) {
-        updatedCurrency = parseInt(currencyMatch[1], 10);
-    }
-
-    // Update HP and MP
-    const hpMatch = aiResponse.match(/\*\*HP\*\*: (\d+)/);
-    if (hpMatch) {
-        updatedHp = parseInt(hpMatch[1], 10);
-    }
-    const mpMatch = aiResponse.match(/\*\*MP\*\*: (\d+)/);
-    if (mpMatch) {
-        updatedMp = parseInt(mpMatch[1], 10);
-    }
-
-    // Update abilities
-    const abilitiesMatch = aiResponse.match(/\*\*Abilities\*\*: (.+?)(?=\*\*|\n|$)/);
-    if (abilitiesMatch) {
-        const abilitiesList = abilitiesMatch[1].split(',').map(name => name.trim());
-        updatedAbilities = abilitiesList.map(name => abilities.find(ability => ability.name === name) || { name, description: 'Unknown ability' });
-    }
-
-    // Update spells
-    const spellsMatch = aiResponse.match(/\*\*Spells\*\*: (.+?)(?=\*\*|\n|$)/);
-    if (spellsMatch) {
-        const spellsList = spellsMatch[1].split(',').map(name => name.trim());
-        updatedSpells = spellsList.map(name => spells.find(spell => spell.name === name) || { name, description: 'Unknown spell' });
-    }
-
-    // Update equipped items only if they are explicitly mentioned
-    const equippedMainHandMatch = aiResponse.match(/\*\*Equipped Main Hand\*\*: (.+?)(?=\*\*|\n|$)/);
-    if (equippedMainHandMatch) {
-        const mainHandName = equippedMainHandMatch[1].trim();
-        updatedEquippedMainHand = mainHandName === 'None' ? null : updatedWeapons.find(w => w.name === mainHandName) || null;
-    }
-    const equippedOffHandMatch = aiResponse.match(/\*\*Equipped Off Hand\*\*: (.+?)(?=\*\*|\n|$)/);
-    if (equippedOffHandMatch) {
-        const offHandName = equippedOffHandMatch[1].trim();
-        updatedEquippedOffHand = offHandName === 'None' ? null : updatedShields.find(s => s.name === offHandName) || null;
-    }
-    const equippedBodyMatch = aiResponse.match(/\*\*Equipped Body\*\*: (.+?)(?=\*\*|\n|$)/);
-    if (equippedBodyMatch) {
-        const bodyName = equippedBodyMatch[1].trim();
-        updatedEquippedBody = bodyName === 'None' ? null : updatedArmor.find(a => a.name === bodyName) || null;
-    }
-    const equippedHeadMatch = aiResponse.match(/\*\*Equipped Head\*\*: (.+?)(?=\*\*|\n|$)/);
-    if (equippedHeadMatch) {
-        const headName = equippedHeadMatch[1].trim();
-        updatedEquippedHead = headName === 'None' ? null : updatedMisc.find(h => h.name === headName) || null;
-    }
-    const equippedLegsMatch = aiResponse.match(/\*\*Equipped Legs\*\*: (.+?)(?=\*\*|\n|$)/);
-    if (equippedLegsMatch) {
-        const legsName = equippedLegsMatch[1].trim();
-        updatedEquippedLegs = legsName === 'None' ? null : updatedArmor.find(l => l.name === legsName) || null;
-    }
-    const equippedFeetMatch = aiResponse.match(/\*\*Equipped Feet\*\*: (.+?)(?=\*\*|\n|$)/);
-    if (equippedFeetMatch) {
-        const feetName = equippedFeetMatch[1].trim();
-        updatedEquippedFeet = feetName === 'None' ? null : updatedArmor.find(f => f.name === feetName) || null;
-    }
-    const equippedRingMatch = aiResponse.match(/\*\*Equipped Ring\*\*: (.+?)(?=\*\*|\n|$)/);
-    if (equippedRingMatch) {
-        const ringName = equippedRingMatch[1].trim();
-        updatedEquippedRing = ringName === 'None' ? null : updatedMisc.find(r => r.name === ringName) || null;
-    }
-    const equippedNecklaceMatch = aiResponse.match(/\*\*Equipped Necklace\*\*: (.+?)(?=\*\*|\n|$)/);
-    if (equippedNecklaceMatch) {
-        const necklaceName = equippedNecklaceMatch[1].trim();
-        updatedEquippedNecklace = necklaceName === 'None' ? null : updatedMisc.find(n => n.name === necklaceName) || null;
-    }
-    const equippedCloakMatch = aiResponse.match(/\*\*Equipped Cloak\*\*: (.+?)(?=\*\*|\n|$)/);
-    if (equippedCloakMatch) {
-        const cloakName = equippedCloakMatch[1].trim();
-        updatedEquippedCloak = cloakName === 'None' ? null : updatedMisc.find(c => c.name === cloakName) || null;
-    }
-
-    console.log("Parsed Inventory:", updatedInventory);
-    console.log("Parsed Weapons:", updatedWeapons);
-    console.log("Parsed Armor:", updatedArmor);
-    console.log("Parsed Shields:", updatedShields);
-    console.log("Parsed Consumables:", updatedConsumables);
-    console.log("Parsed Misc:", updatedMisc);
-    console.log("Parsed Currency:", updatedCurrency);
-    console.log("Parsed Abilities:", updatedAbilities);
-    console.log("Parsed Spells:", updatedSpells);
-    console.log("Parsed HP:", updatedHp);
-    console.log("Parsed MP:", updatedMp);
-    console.log("Parsed Equipped Main Hand:", updatedEquippedMainHand);
-    console.log("Parsed Equipped Off Hand:", updatedEquippedOffHand);
-    console.log("Parsed Equipped Body:", updatedEquippedBody);
-    console.log("Parsed Equipped Head:", updatedEquippedHead);
-    console.log("Parsed Equipped Legs:", updatedEquippedLegs);
-    console.log("Parsed Equipped Feet:", updatedEquippedFeet);
-    console.log("Parsed Equipped Ring:", updatedEquippedRing);
-    console.log("Parsed Equipped Necklace:", updatedEquippedNecklace);
-    console.log("Parsed Equipped Cloak:", updatedEquippedCloak);
-
-    return {
-        updatedInventory,
-        updatedWeapons,
-        updatedArmor,
-        updatedShields,
-        updatedConsumables,
-        updatedMisc,
-        updatedCurrency,
-        updatedAbilities,
-        updatedSpells,
-        updatedHp,
-        updatedMp,
-        updatedEquippedMainHand,
-        updatedEquippedOffHand,
-        updatedEquippedBody,
-        updatedEquippedHead,
-        updatedEquippedLegs,
-        updatedEquippedFeet,
-        updatedEquippedRing,
-        updatedEquippedNecklace,
-        updatedEquippedCloak
-    };
-};
-
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'POST') {
@@ -343,28 +165,7 @@ Give realistic consequences to the player's action, with nuance and complexity.
 
             const aiResponse = response.choices[0].message.content;
             console.log("OpenAI response received:", aiResponse);
-            const {
-                updatedInventory,
-                updatedWeapons,
-                updatedArmor,
-                updatedShields,
-                updatedConsumables,
-                updatedMisc,
-                updatedCurrency,
-                updatedAbilities,
-                updatedSpells,
-                updatedHp,
-                updatedMp,
-                updatedEquippedMainHand,
-                updatedEquippedOffHand,
-                updatedEquippedBody,
-                updatedEquippedHead,
-                updatedEquippedLegs,
-                updatedEquippedFeet,
-                updatedEquippedRing,
-                updatedEquippedNecklace,
-                updatedEquippedCloak
-            } = parseAIResponse(
+            const parsedResponse = parseAIResponse(
                 aiResponse,
                 inventory,
                 weapons,
@@ -390,26 +191,7 @@ Give realistic consequences to the player's action, with nuance and complexity.
 
             return res.status(200).json({
                 response: aiResponse,
-                updatedInventory,
-                updatedWeapons,
-                updatedArmor,
-                updatedShields,
-                updatedConsumables,
-                updatedMisc,
-                updatedCurrency,
-                updatedAbilities,
-                updatedSpells,
-                updatedHp,
-                updatedMp,
-                updatedEquippedMainHand,
-                updatedEquippedOffHand,
-                updatedEquippedBody,
-                updatedEquippedHead,
-                updatedEquippedLegs,
-                updatedEquippedFeet,
-                updatedEquippedRing,
-                updatedEquippedNecklace,
-                updatedEquippedCloak
+                ...parsedResponse,
             });
         } catch (error) {
             console.error("Error with OpenAI API:", error);

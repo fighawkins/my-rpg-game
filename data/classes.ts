@@ -19,6 +19,7 @@ export type Class = {
     description: string;
     startingHP: number;
     startingMP: number;
+    startingCurrency: number;
     abilities: Ability[];
     spells: Spell[];
     species: {
@@ -39,6 +40,7 @@ export const classOptions: Class[] = [
         name: 'Warrior',
         startingHP: 20,
         startingMP: 10,
+        startingCurrency: 100,
         description: 'Warriors are the frontline defenders, known for their strength and bravery. They excel in combat and are equipped to handle the toughest foes with sheer power and resilience.',
         abilities: [
             abilities.find((ability: { name: string; }) => ability.name === 'Extra Attack')!

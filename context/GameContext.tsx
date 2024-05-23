@@ -1,3 +1,4 @@
+
 "use client";
 import React, { createContext, useContext, useState } from 'react';
 import { Item, classifyItem } from '@/data/itemSchema';
@@ -156,36 +157,72 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const equipItem = (item: Item) => {
         console.log("Equipping item:", item);
         if (item.slot) {
-            switch (item.slot) {
-                case 'main_hand':
-                    setEquippedMainHand(item);
-                    break;
-                case 'off_hand':
-                    setEquippedOffHand(item);
-                    break;
-                case 'body':
-                    setEquippedBody(item);
-                    break;
-                case 'head':
-                    setEquippedHead(item);
-                    break;
-                case 'legs':
-                    setEquippedLegs(item);
-                    break;
-                case 'feet':
-                    setEquippedFeet(item);
-                    break;
-                case 'ring':
-                    setEquippedRing(item);
-                    break;
-                case 'necklace':
-                    setEquippedNecklace(item);
-                    break;
-                case 'cloak':
-                    setEquippedCloak(item);
-                    break;
-                default:
-                    console.error('Invalid item slot:', item.slot);
+            if (Array.isArray(item.slot)) {
+                item.slot.forEach(slot => {
+                    switch (slot) {
+                        case 'main_hand':
+                            setEquippedMainHand(item);
+                            break;
+                        case 'off_hand':
+                            setEquippedOffHand(item);
+                            break;
+                        case 'body':
+                            setEquippedBody(item);
+                            break;
+                        case 'head':
+                            setEquippedHead(item);
+                            break;
+                        case 'legs':
+                            setEquippedLegs(item);
+                            break;
+                        case 'feet':
+                            setEquippedFeet(item);
+                            break;
+                        case 'ring':
+                            setEquippedRing(item);
+                            break;
+                        case 'necklace':
+                            setEquippedNecklace(item);
+                            break;
+                        case 'cloak':
+                            setEquippedCloak(item);
+                            break;
+                        default:
+                            console.error('Invalid item slot:', slot);
+                    }
+                });
+            } else {
+                switch (item.slot) {
+                    case 'main_hand':
+                        setEquippedMainHand(item);
+                        break;
+                    case 'off_hand':
+                        setEquippedOffHand(item);
+                        break;
+                    case 'body':
+                        setEquippedBody(item);
+                        break;
+                    case 'head':
+                        setEquippedHead(item);
+                        break;
+                    case 'legs':
+                        setEquippedLegs(item);
+                        break;
+                    case 'feet':
+                        setEquippedFeet(item);
+                        break;
+                    case 'ring':
+                        setEquippedRing(item);
+                        break;
+                    case 'necklace':
+                        setEquippedNecklace(item);
+                        break;
+                    case 'cloak':
+                        setEquippedCloak(item);
+                        break;
+                    default:
+                        console.error('Invalid item slot:', item.slot);
+                }
             }
         } else {
             console.error('Item has no slot:', item);

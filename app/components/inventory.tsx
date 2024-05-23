@@ -61,7 +61,6 @@ const Inventory: React.FC<InventoryProps> = ({
                     <li><strong>Cloak:</strong> {equippedCloak ? equippedCloak.name : 'None'}</li>
                 </ul>
             </div>
-
             <div className="mt-4">
                 <h3 className="text-xl font-semibold mb-2 text-center">Consumables</h3>
                 <ul className="mb-4">{consumables.map((item, index) => <li key={index}>{item.name}</li>)}</ul>

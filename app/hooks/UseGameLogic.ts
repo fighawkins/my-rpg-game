@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useGameContext } from '@/context/GameContext';
 import { appendToSummary, loadSummary, saveSummary, serializeResponses } from '../Utils/Summary';
 import { fetchInitialScene, fetchUserInput } from '../Utils/Api';
-import { parseAbilities, parseSpells } from '../Utils/Parsers';
+import { parseAbilities, parseSpells } from '../Utils/CharacterUtils';
 
 export const useGameLogic = () => {
     const [input, setInput] = useState<string>('');

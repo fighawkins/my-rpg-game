@@ -100,6 +100,7 @@ export const parseAIResponse = (
         updatedMp = parseInt(mpText[1], 10);
     }
 
+    // Only update the equipped items if they are mentioned in the AI response
     if (equippedMainHandText) {
         updatedEquippedMainHand = updatedInventory.find(item => item.name === equippedMainHandText[1]) || null;
     }

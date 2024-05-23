@@ -1,6 +1,6 @@
-import nlp from 'compromise';
+import nlp from "compromise";
 
-export type ItemType = 'weapon' | 'armor' | 'shield' | 'consumable' | 'misc' | 'head' | 'ring' | 'necklace' | 'cloak';
+export type ItemType = 'weapon' | 'armor' | 'shield' | 'consumable' | 'misc' | 'accessory';
 export type EquipSlot = 'main_hand' | 'off_hand' | 'body' | 'head' | 'legs' | 'feet' | 'ring' | 'necklace' | 'cloak';
 
 export type Item = {
@@ -21,8 +21,9 @@ export type Item = {
 };
 
 const weaponKeywords = ['blade', 'sword', 'dagger', 'axe', 'mace', 'hammer', 'weapon', 'spear', 'staff', 'bow', 'crossbow'];
-const armorKeywords = ['armor', 'robe', 'mail', 'plate', 'shield', 'helmet', 'cap', 'hat', 'boots', 'shoes'];
+const armorKeywords = ['armor', 'robe', 'mail', 'plate', 'shield', 'helmet', 'cap', 'hat', 'boots', 'shoes', 'pants', 'shorts', 'greaves', 'skirt'];
 const consumableKeywords = ['potion', 'elixir', 'antidote', 'food', 'drink', 'tea', 'cake', 'bread', 'honey', 'consumable'];
+const accessoryKeywords = ['ring', 'necklace', 'cloak'];
 const magicKeywords = ['magic', 'enchanted', 'spell', 'cursed', 'mystical', 'of'];
 
 export const classifyItem = (itemName: string, description: string): Item => {
@@ -72,7 +73,7 @@ export const classifyItem = (itemName: string, description: string): Item => {
             description: description,
             weight: 10,
             equippable: true,
-            slot: 'body',
+            slot: determineSlot(itemName, description),
             attributes: {
                 armorClass: 5,
             },
@@ -91,6 +92,18 @@ export const classifyItem = (itemName: string, description: string): Item => {
                 effect: 'restore health',
                 duration: 0,
             },
+        };
+    }
+
+    // Check for accessories
+    if (accessoryKeywords.some(keyword => doc.has(keyword))) {
+        return {
+            name: itemName,
+            type: 'accessory',
+            description: description,
+            weight: 0.1,
+            equippable: true,
+            slot: determineSlot(itemName, description),
         };
     }
 
@@ -115,6 +128,9 @@ const detectItemType = (itemName: string, description: string): ItemType => {
     if (consumableKeywords.some(keyword => itemName.includes(keyword) || description.includes(keyword))) {
         return 'consumable';
     }
+    if (accessoryKeywords.some(keyword => itemName.includes(keyword) || description.includes(keyword))) {
+        return 'accessory';
+    }
     return 'misc';
 };
 
@@ -135,6 +151,9 @@ const determineSlot = (itemName: string, description: string): EquipSlot | Equip
     if (itemName.includes('boots') || description.includes('boots') || itemName.includes('shoes') || description.includes('shoes')) {
         return 'feet';
     }
+    if (itemName.includes('pants') || description.includes('pants') || itemName.includes('shorts') || description.includes('shorts') || itemName.includes('greaves') || description.includes('greaves') || itemName.includes('skirt') || description.includes('skirt')) {
+        return 'legs';
+    }
     if (itemName.includes('ring') || description.includes('ring')) {
         return 'ring';
     }
@@ -153,4 +172,5 @@ export const items: Item[] = [
     classifyItem('Healing Potion', 'A potion that restores health.'),
     classifyItem('Steel Armor', 'Heavy armor that provides excellent protection.'),
     classifyItem('Boots of Speed', 'These boots make you run faster.'),
+    classifyItem('Ring of Protection', 'A ring that enhances your defense.'),
 ];

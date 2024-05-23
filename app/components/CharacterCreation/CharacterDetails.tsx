@@ -6,7 +6,7 @@ import { classOptions } from '@/data/classes';
 import Link from 'next/link';
 
 export default function CharacterDetails() {
-    const { species, gender, characterClass, name, inventory, currency, abilities, stats, hp, mp, spells, equippedWeapon, equippedArmor, equippedShield, setName, initializeCharacter, setInventory, setCurrency, setAbilities, setSpells } = useGameContext();
+    const { species, gender, characterClass, name, inventory, currency, abilities, stats, hp, mp, spells, equippedMainHand, equippedBody, equippedOffHand, setName, initializeCharacter } = useGameContext();
     const [localName, setLocalName] = useState(name);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,13 +22,6 @@ export default function CharacterDetails() {
             initializeCharacter(species, characterClass);
         }
     }, [species, characterClass]);
-
-    useEffect(() => {
-        console.log('Inventory:', inventory);
-        console.log('Currency:', currency);
-        console.log('Abilities:', abilities);
-        console.log('Spells:', spells);
-    }, [inventory, currency, abilities, spells]);
 
     const handleBeginGame = async () => {
         setName(localName);
@@ -151,9 +144,9 @@ export default function CharacterDetails() {
                         <div className="flex-1 min-w-[200px]">
                             <h3 className="text-2xl font-semibold mb-2 text-black">Equipped</h3>
                             <ul className="list-none text-black">
-                                <li><strong>Weapon:</strong> {equippedWeapon ? equippedWeapon.name : 'None'}</li>
-                                <li><strong>Armor:</strong> {equippedArmor ? equippedArmor.name : 'None'}</li>
-                                <li><strong>Shield:</strong> {equippedShield ? equippedShield.name : 'None'}</li>
+                                <li><strong>Main Hand:</strong> {equippedMainHand ? equippedMainHand.name : 'None'}</li>
+                                <li><strong>Off Hand:</strong> {equippedOffHand ? equippedOffHand.name : 'None'}</li>
+                                <li><strong>Body:</strong> {equippedBody ? equippedBody.name : 'None'}</li>
                             </ul>
                         </div>
                     </div>
